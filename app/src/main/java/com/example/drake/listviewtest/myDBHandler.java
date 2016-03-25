@@ -43,7 +43,7 @@ public class myDBHandler extends SQLiteOpenHelper{
         //Passes the above command to SQL to execute
         db.execSQL(query);
 
-
+        //REMOVE ME
     }
 
     @Override
