@@ -22,15 +22,11 @@ public class MainActivity extends AppCompatActivity {
     public final String FILENAME = "SmackTalkerMessages.ded";
     protected String userID;
 
-    protected ArrayList<MessageData> messages;
-
-    protected ListView listView;
-
-
     myDBHandler dbHandler;
 
     EditText newMessageText;
     ListAdapter myListAdapter;
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +36,16 @@ public class MainActivity extends AppCompatActivity {
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
 
-        //Temporary
+        /*//Temporary
         messages.add(new MessageData("Hi this is a message", 32, "Sender Person"));
         messages.add(new MessageData("This is another message", 7, "Receiver Person"));
         messages.add(new MessageData("SO MANY MESSAGES!!!1!!", 1008, "Sender Person"));
-        messages.add(new MessageData("Does a fourth message work?", 2, "Receiver Person"));
+        messages.add(new MessageData("Does a fourth message work?", 2, "Receiver Person"));*/
 
         //Create text view for user written messages
         newMessageText = (EditText) findViewById(R.id.newMessageText);
-        //Create button for sendButton
-        Button sendButton = (Button) findViewById(R.id.sendButton);
 
-         //Sets up custom List adapter defined in Custom Adapter
+        /* //Sets up custom List adapter defined in Custom Adapter
         myListAdapter = new CustomAdapter(this, messages);
         Log.d(DEBUGTAG, "Custom Adapter created");
 
@@ -75,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("DED", message);
                     }
                 }
-        );
+        );*/
     }
 
     //Message is ready to be sent.
