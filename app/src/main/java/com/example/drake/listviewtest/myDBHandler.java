@@ -62,6 +62,10 @@ public class myDBHandler extends SQLiteOpenHelper{
         //Adds the saved message string to the MESSAGETEXT column
         values.put(COLUMN_MESSAGETEXT, message.getMessage());
 
+        values.put(COLUMN_SENDERID, message.getSenderID());
+
+        values.put(COLUMN_TIME, message.getTime());
+
         //Creates a database we can write to!
         SQLiteDatabase db = getWritableDatabase();
 

@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
 
-
-
         //Temporary
         messages.add(new MessageData("Hi this is a message", 32, "Sender Person"));
         messages.add(new MessageData("This is another message", 7, "Receiver Person"));
@@ -93,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //For testing purposes.
     public void addButtonClicked(View view){
         Log.d(DEBUGTAG, "Temp");
     }
