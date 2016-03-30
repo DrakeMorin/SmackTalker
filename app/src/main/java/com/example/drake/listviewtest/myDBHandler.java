@@ -116,4 +116,18 @@ public class myDBHandler extends SQLiteOpenHelper{
         db.close();
         return dbString;
     }
+
+    //Get Row Count
+    public int getCount() {
+        String countQuery = "SELECT  * FROM " + TABLE_MESSAGES;
+        int count = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        if(cursor != null && !cursor.isClosed()){
+            count = cursor.getCount();
+            cursor.close();
+        }
+        return count;
+    }
+
 }
