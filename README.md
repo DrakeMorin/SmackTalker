@@ -5,3 +5,8 @@ Over the course of our Grade 12 semester, we will create a working application s
 
 We have chosen to use Bluetooth to make our application unique and independent of Wi-Fi and cellular reception.  Our application will enable users to communicate within a localized area.  By using Bluetooth we hope to create conversation among peers.
 
+Bluetooth is one of the least used modes of communication between devices.  We wish to expand in this small market as this is our group's first application.
+
+The coding for Bluetooth is based on a conversation.  There is an initial greeting, followed by a set of questions between the devices.  If the questions are 'correct' the devices will connect.
+
+We have aimed to use as many comments as possible within our coding to explain why we feel that the app must be programmed as such.
