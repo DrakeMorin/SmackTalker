@@ -26,15 +26,21 @@ public class MainActivity extends AppCompatActivity {
 
     protected ListView listView;
 
+
+    myDBHandler dbHandler;
+
+    EditText newMessageText;
+    ListAdapter myListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //DELETE ME!
+        //Since the last three parameters are constants of the class, null is passed.
+        dbHandler = new myDBHandler(this, null, null, 1);
 
-        //Load any previous messages
-        messages = loadFile();
+
 
         //Temporary
         messages.add(new MessageData("Hi this is a message", 32, "Sender Person"));
@@ -43,12 +49,12 @@ public class MainActivity extends AppCompatActivity {
         messages.add(new MessageData("Does a fourth message work?", 2, "Receiver Person"));
 
         //Create text view for user written messages
-        final EditText newMessageText = (EditText) findViewById(R.id.newMessageText);
+        newMessageText = (EditText) findViewById(R.id.newMessageText);
         //Create button for sendButton
         Button sendButton = (Button) findViewById(R.id.sendButton);
 
          //Sets up custom List adapter defined in Custom Adapter
-        final ListAdapter myListAdapter = new CustomAdapter(this, messages);
+        myListAdapter = new CustomAdapter(this, messages);
         Log.d(DEBUGTAG, "Custom Adapter created");
 
         //Creates listView object in Java
@@ -72,70 +78,22 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        //Create clickListener for send button
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (!newMessageText.getText().toString().equals("")) {
-                    //If statement only runs if the text field has text in it.
-                    //Add message data: message, time, sender; to ArrayList
-                    messages.add(new MessageData(newMessageText.getText().toString(), 0, userID));
-
-                    Log.d(DEBUGTAG, "Button: ArrayList Size: " + messages.size());
-                    //Clear text field
-                    newMessageText.setText("");
-
-                    Log.d(DEBUGTAG, "EditText cleared");
-
-
-                    listView.invalidateViews();
-                    //listView.deferNotifyDataSetChanged();
-                    Log.d(DEBUGTAG, "ListView refreshed");
-
-                    //Call method to send message through Bluetooth
-                } else {
-                    Log.d(DEBUGTAG, "No message to send.");
-                }
-            }
-        });
     }
 
-    protected ArrayList<MessageData> loadFile(){
-        //Read file of previous messages sent.
-        ArrayList<MessageData> messages;
-        try {
-            FileInputStream fis = new FileInputStream(FILENAME);
-            ObjectInputStream ois = new ObjectInputStream(fis);
+    //Message is ready to be sent.
+    public void sendButtonClicked(View view){
+        if (!newMessageText.getText().toString().equals("")) {
+            //Only run if newMessageText is not empty
+            //Add to database a new MessageData object with fields.
+            dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), 0, userID));
 
-            //Sets messages ArrayList equal to object read from file.
-            messages = (ArrayList<MessageData>) ois.readObject();
-
-            ois.close();
-            fis.close();
-
-            //Return updated ArrayList
-            return messages;
-        }catch (Exception e){
-            Log.d(DEBUGTAG, "Unable to read file");
+            //Clear text field
+            newMessageText.setText("");
+            Log.d(DEBUGTAG, "EditText cleared");
         }
-        return messages = new ArrayList<MessageData>();
     }
 
-    protected void saveFile(ArrayList<MessageData> messages){
-       //Serialize array containing message data
-        try{
-            //ObjectOutputStream oos =  openFileOutput("SmackTalkerMessages", Context.MODE_PRIVATE);
-            FileOutputStream fos = new FileOutputStream(FILENAME);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-            //Serializes the object to save file
-            oos.writeObject(messages);
-
-            oos.close();
-            fos.close();
-
-        }catch (Exception e){
-            Log.d(DEBUGTAG, "Unable to serialize object");
-        }
+    public void addButtonClicked(View view){
+        Log.d(DEBUGTAG, "Temp");
     }
 }
