@@ -14,12 +14,12 @@ public class myDBHandler extends SQLiteOpenHelper{
     //Name of database, must end in .db
     private static final String DATABASE_NAME = "SmackTalker.db";
     //Name of the table within the database
-    public static final String TABLE_MESSAGES = "MessageHistory";
+    public static final String TABLE_MESSAGES = "messagehistory";
 
     //Every column in the table should have its own constant here.
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_MESSAGETEXT = "messagetext";
-    public static final String COLUMN_SENDERID = "senderID";
+    public static final String COLUMN_SENDERID = "senderid";
     public static final String COLUMN_TIME = "time";
 
     public myDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -110,7 +110,6 @@ public class myDBHandler extends SQLiteOpenHelper{
             }
         }
         db.close();
-
         return dbString;
     }
 }
