@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
             //Clear text field
             newMessageText.setText("");
             Log.d(DEBUGTAG, "EditText cleared");
+        }else {
+            Log.d(DEBUGTAG, "Message Field Empty");
         }
     }
 
