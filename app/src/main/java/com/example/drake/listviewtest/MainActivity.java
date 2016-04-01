@@ -78,15 +78,16 @@ public class MainActivity extends AppCompatActivity {
                 }
         );*/
         //Populate listView with previous messages
-        populateListView();
+        //populateListView();
     }
 
     //Message is ready to be sent.
     public void sendButtonClicked(View view){
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
-            calendar.getInstance();
-            String timeStamp = calendar.toString();
+            //calendar.getInstance();
+            //String timeStamp = calendar.toString();
+            String timeStamp = null;
             //Aside: Format "%Y-%m-%d %H:%M:%S"
 
             //Add to database a new MessageData object with fields.
