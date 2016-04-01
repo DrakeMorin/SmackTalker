@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );*/
         //Populate listView with previous messages
-        //populateListView();
+        populateListView();
     }
 
     //Message is ready to be sent.
