@@ -6,11 +6,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class myDBHandler extends SQLiteOpenHelper{
 
     //If you update the structure of the database, change this constant for compatibility
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     //Name of database, must end in .db
     private static final String DATABASE_NAME = "SmackTalker.db";
     //Name of the table within the database
@@ -18,7 +19,7 @@ public class myDBHandler extends SQLiteOpenHelper{
 
     //Every column in the table should have its own constant here.
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_MESSAGETEXT = "messagetext";
+    public static final String COLUMN_MESSAGETEXT = "message";
     public static final String COLUMN_SENDERID = "senderid";
     public static final String COLUMN_TIME = "time";
 
@@ -36,14 +37,15 @@ public class myDBHandler extends SQLiteOpenHelper{
         //Looks like tableName(column1 <> column2 <> column3 <>);
         //Where the <> is the details about that column
         String query = "CREATE TABLE " + TABLE_MESSAGES + "(" +
-                COLUMN_ID + " INTERGER PRIMARY KEY AUTOINCREMENT" + //Unique int identifier, automatically incrementing
-                COLUMN_MESSAGETEXT + " TEXT " +
-                COLUMN_SENDERID + " TEXT " +
-                COLUMN_TIME + "  " +
+                COLUMN_ID + " INTERGER PRIMARY KEY, " + //Unique int identifier, automatically incrementing
+                COLUMN_MESSAGETEXT + " TEXT, " +
+                COLUMN_SENDERID + " TEXT, " +
+                COLUMN_TIME + " INTEGER " +
                 ");";
 
         //Passes the above command to SQL to execute
         db.execSQL(query);
+        Log.d(MainActivity.DEBUGTAG,"DB Created");
     }
 
     @Override
@@ -53,24 +55,27 @@ public class myDBHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
         //Call onCreate to make a new table.
         onCreate(db);
+        Log.d(MainActivity.DEBUGTAG, "Table Dropped");
     }
 
     //Add a new row to the database
     public void addMessage(MessageData message){
         //Allows you to set values for several columns for one row, in one go.
         ContentValues values = new ContentValues();
-        //Adds the saved message string to the MESSAGETEXT column
+
+        //Adds the data to its respective columns
         values.put(COLUMN_MESSAGETEXT, message.getMessage());
-
         values.put(COLUMN_SENDERID, message.getSenderID());
-
         values.put(COLUMN_TIME, message.getTime());
+        Log.d(MainActivity.DEBUGTAG, "ContentValues configured");
 
         //Creates a database we can write to!
         SQLiteDatabase db = getWritableDatabase();
+        Log.d(MainActivity.DEBUGTAG, "Writeable DB created");
 
         //Inserts a new row in
         db.insert(TABLE_MESSAGES, null, values);
+        Log.d(MainActivity.DEBUGTAG, "Data passed into DB");
 
         //Closes database, saves android some memory.
         db.close();

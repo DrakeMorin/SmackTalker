@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    protected final String DEBUGTAG = "DED";
+    protected final static String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
     protected String userID;
 
