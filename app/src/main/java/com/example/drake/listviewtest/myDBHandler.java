@@ -23,11 +23,12 @@ public class myDBHandler extends SQLiteOpenHelper{
     protected static final String COLUMN_SENDERID = "senderid";
     protected static final String COLUMN_TIME = "time";
 
-    protected static final String[] allColumns = {COLUMN_ID,COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME};
+    protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME};
 
     public myDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
         //For housekeeping, passes information to the super class which does background stuff.
+        Log.d(MainActivity.DEBUGTAG, "DB Handler constructor run");
     }
 
     @Override
@@ -127,7 +128,7 @@ public class myDBHandler extends SQLiteOpenHelper{
     //This function when called returns all the data in the database in a cursor.
     public Cursor getAllRows(){
         SQLiteDatabase db = getWritableDatabase();
-        Cursor c = db.query(true, DATABASE_NAME, allColumns , null, null, null, null, null, null );
+        Cursor c = db.query(true, TABLE_MESSAGES, allColumns , null, null, null, null, null, null );
         if(c != null){
             c.moveToFirst();
         }
