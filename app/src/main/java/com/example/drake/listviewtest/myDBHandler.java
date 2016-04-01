@@ -18,10 +18,12 @@ public class myDBHandler extends SQLiteOpenHelper{
     public static final String TABLE_MESSAGES = "messagehistory";
 
     //Every column in the table should have its own constant here.
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_MESSAGETEXT = "message";
-    public static final String COLUMN_SENDERID = "senderid";
-    public static final String COLUMN_TIME = "time";
+    protected static final String COLUMN_ID = "_id";
+    protected static final String COLUMN_MESSAGETEXT = "message";
+    protected static final String COLUMN_SENDERID = "senderid";
+    protected static final String COLUMN_TIME = "time";
+
+    protected static final String[] allColumns = {COLUMN_ID,COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME};
 
     public myDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -45,7 +47,7 @@ public class myDBHandler extends SQLiteOpenHelper{
 
         //Passes the above command to SQL to execute
         db.execSQL(query);
-        Log.d(MainActivity.DEBUGTAG,"DB Created");
+        Log.d(MainActivity.DEBUGTAG, "DB Created");
     }
 
     @Override
@@ -120,6 +122,16 @@ public class myDBHandler extends SQLiteOpenHelper{
         }
         db.close();
         return dbString;
+    }
+
+    //This function when called returns all the data in the database in a cursor.
+    public Cursor getAllRows(){
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor c = db.query(true, DATABASE_NAME, allColumns , null, null, null, null, null, null );
+        if(c != null){
+            c.moveToFirst();
+        }
+        return c;
     }
 
     //Get Row Count

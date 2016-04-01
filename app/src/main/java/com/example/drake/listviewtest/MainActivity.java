@@ -1,5 +1,6 @@
 package com.example.drake.listviewtest;
 
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,11 +10,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     EditText newMessageText;
     ListAdapter myListAdapter;
     ListView listView;
+
+    GregorianCalendar calendar = new GregorianCalendar();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,21 +77,50 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );*/
+        //Populate listView with previous messages
+        populateListView();
     }
 
     //Message is ready to be sent.
     public void sendButtonClicked(View view){
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
+            calendar.getInstance();
+            String timeStamp = calendar.toString();
+            //Aside: Format "%Y-%m-%d %H:%M:%S"
+
             //Add to database a new MessageData object with fields.
-            dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), 0, userID));
+            dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), timeStamp, userID));
 
             //Clear text field
             newMessageText.setText("");
             Log.d(DEBUGTAG, "EditText cleared");
+
+            //Refresh listView
+            populateListView();
         }else {
             Log.d(DEBUGTAG, "Message Field Empty");
         }
+    }
+
+    private void populateListView(){
+        Cursor myCursor = dbHandler.getAllRows();
+        //What data you are going to populate the data with
+        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_ID/*, myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME*/};
+        //Where the data is going to go.
+        int[] toViewIDs = new int[] {R.id.listRowText};
+
+        //Define cursorAdapter, instantiated next line.
+        SimpleCursorAdapter myCursorAdapter;
+        //Get the context, the defined layout being used, the cursor, the columns being read, the location of info being stored, 0
+        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
+
+        //Set listView
+        ListView myListView = (ListView) findViewById(R.id.listView);
+
+        //Sets listView adapter to the cursorAdapter
+        myListView.setAdapter(myCursorAdapter);
+
     }
 
     //For testing purposes.
