@@ -67,9 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public void sendButtonClicked(View view){
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
-            //calendar.getInstance();
-            //String timeStamp = calendar.toString();
-            String timeStamp = "0";
+            calendar.getInstance();
+            String timeStamp = calendar.toString();
             //Aside: Format "%Y-%m-%d %H:%M:%S"
 
             //Add to database a new MessageData object with fields.
