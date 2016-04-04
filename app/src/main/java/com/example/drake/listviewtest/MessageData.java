@@ -11,12 +11,12 @@ class MessageData {
     String message;
 
     //Holds the time message was sent
-    int time;
+    String time;
 
     //Holds name of sender
     String senderID;
 
-    public MessageData(String message, int time, String senderID) {
+    public MessageData(String message, String time, String senderID) {
         //Constructor that sets data
         this.message = message;
         this.time = time;
@@ -29,7 +29,7 @@ class MessageData {
         return message;
     }
 
-    public int getTime() {
+    public String getTime() {
         return time;
     }
 
