@@ -1,8 +1,10 @@
 package com.example.drake.listviewtest;
 
+import android.bluetooth.BluetoothAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,9 +22,11 @@ public class MainActivity extends AppCompatActivity {
 
     protected final String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
-    protected String userID;
-
     protected ArrayList<MessageData> messages;
+    protected String userID;
+    private BluetoothAdapter btAdapter;
+    private Button Bluetooth;
+
 
     protected ListView listView;
 
@@ -97,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     protected ArrayList<MessageData> loadFile(){
         //Read file of previous messages sent.
