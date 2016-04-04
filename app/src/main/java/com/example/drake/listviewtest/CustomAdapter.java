@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 
 //TEST COMMENT//
-//tESTING//
+
 
 /**
  * Created by Drake on 2016-03-01.
@@ -26,32 +26,32 @@ class CustomAdapter extends ArrayAdapter<MessageData> {
     //to each image. For example, the picture for A would be at index 0, Z at index 25.
     //NOTE: Non-letter chars will all be assigned ID 26 which will be generic.
     int[] myImageArray = new int[]{
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.img,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
+            (int) R.drawable.me,
+            (int) R.drawable.you,
     };
 
     public CustomAdapter(Context context, ArrayList<MessageData> resource) {
