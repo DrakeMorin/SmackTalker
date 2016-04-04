@@ -43,28 +43,10 @@ public class MainActivity extends AppCompatActivity {
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
 
-        /*//Temporary
-        messages.add(new MessageData("Hi this is a message", 32, "Sender Person"));
-        messages.add(new MessageData("This is another message", 7, "Receiver Person"));
-        messages.add(new MessageData("SO MANY MESSAGES!!!1!!", 1008, "Sender Person"));
-        messages.add(new MessageData("Does a fourth message work?", 2, "Receiver Person"));*/
-
         //Create text view for user written messages
         newMessageText = (EditText) findViewById(R.id.newMessageText);
 
-        /* //Sets up custom List adapter defined in Custom Adapter
-        myListAdapter = new CustomAdapter(this, messages);
-        Log.d(DEBUGTAG, "Custom Adapter created");
-
-        //Creates listView object in Java
-        listView = (ListView) findViewById(R.id.listView);
-        Log.d(DEBUGTAG, "ListView created");
-
-        //Sets the adapter for data to the above adapter
-        listView.setAdapter(myListAdapter);
-        Log.d(DEBUGTAG, "Adapter set");
-
-        //Add item onClickListener
+        /*//Add item onClickListener
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
@@ -87,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             //Only run if newMessageText is not empty
             //calendar.getInstance();
             //String timeStamp = calendar.toString();
-            String timeStamp = null;
+            String timeStamp = "0";
             //Aside: Format "%Y-%m-%d %H:%M:%S"
 
             //Add to database a new MessageData object with fields.
@@ -107,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
     private void populateListView(){
         Cursor myCursor = dbHandler.getAllRows();
         //What data you are going to populate the data with
-        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_ID/*, myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME*/};
+        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME};
         //Where the data is going to go.
-        int[] toViewIDs = new int[] {R.id.listRowText};
+        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime};
 
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
