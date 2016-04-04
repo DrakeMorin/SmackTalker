@@ -26,32 +26,32 @@ class CustomAdapter extends ArrayAdapter<MessageData> {
     //to each image. For example, the picture for A would be at index 0, Z at index 25.
     //NOTE: Non-letter chars will all be assigned ID 26 which will be generic.
     int[] myImageArray = new int[]{
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.img,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
-            (int) R.drawable.me,
-            (int) R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
     };
 
     public CustomAdapter(Context context, ArrayList<MessageData> resource) {
@@ -104,7 +104,7 @@ class CustomAdapter extends ArrayAdapter<MessageData> {
         String singleMessageItem = messageDataArrayList.get(position).getMessage();
 
         //Creates text view
-        TextView myTextView = (TextView) customView.findViewById(R.id.listRowText);
+        TextView myTextView = (TextView) customView.findViewById(R.id.listRowMessage);
         //Creates image view
         ImageView myImageView = (ImageView) customView.findViewById((R.id.listRowImage));
 

@@ -1,5 +1,6 @@
 package com.example.drake.listviewtest;
 
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,55 +10,43 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    protected final String DEBUGTAG = "DED";
+    protected final static String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
     protected String userID;
 
-    protected ArrayList<MessageData> messages;
+    myDBHandler dbHandler;
 
-    protected ListView listView;
+    EditText newMessageText;
+    ListAdapter myListAdapter;
+    ListView listView;
+
+    GregorianCalendar calendar = new GregorianCalendar();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Load any previous messages
-        messages = loadFile();
-
-        //Temporary
-        messages.add(new MessageData("Hi this is a message", 32, "Sender Person"));
-        messages.add(new MessageData("This is another message", 7, "Receiver Person"));
-        messages.add(new MessageData("SO MANY MESSAGES!!!1!!", 1008, "Sender Person"));
-        messages.add(new MessageData("Does a fourth message work?", 2, "Receiver Person"));
+        //Since the last three parameters are constants of the class, null is passed.
+        dbHandler = new myDBHandler(this, null, null, 1);
 
         //Create text view for user written messages
-        final EditText newMessageText = (EditText) findViewById(R.id.newMessageText);
-        //Create button for sendButton
-        Button sendButton = (Button) findViewById(R.id.sendButton);
+        newMessageText = (EditText) findViewById(R.id.newMessageText);
 
-         //Sets up custom List adapter defined in Custom Adapter
-        final ListAdapter myListAdapter = new CustomAdapter(this, messages);
-        Log.d(DEBUGTAG, "Custom Adapter created");
-
-        //Creates listView object in Java
-        listView = (ListView) findViewById(R.id.listView);
-        Log.d(DEBUGTAG, "ListView created");
-
-        //Sets the adapter for data to the above adapter
-        listView.setAdapter(myListAdapter);
-        Log.d(DEBUGTAG, "Adapter set");
-
-        //Add item onClickListener
+        /*//Add item onClickListener
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
@@ -69,71 +58,56 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("DED", message);
                     }
                 }
-        );
-
-        //Create clickListener for send button
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (!newMessageText.getText().toString().equals("")) {
-                    //If statement only runs if the text field has text in it.
-                    //Add message data: message, time, sender; to ArrayList
-                    messages.add(new MessageData(newMessageText.getText().toString(), 0, userID));
-
-                    Log.d(DEBUGTAG, "Button: ArrayList Size: " + messages.size());
-                    //Clear text field
-                    newMessageText.setText("");
-
-                    Log.d(DEBUGTAG, "EditText cleared");
-
-
-                    listView.invalidateViews();
-                    //listView.deferNotifyDataSetChanged();
-                    Log.d(DEBUGTAG, "ListView refreshed");
-
-                    //Call method to send message through Bluetooth
-                } else {
-                    Log.d(DEBUGTAG, "No message to send.");
-                }
-            }
-        });
+        );*/
+        //Populate listView with previous messages
+        populateListView();
     }
 
-    protected ArrayList<MessageData> loadFile(){
-        //Read file of previous messages sent.
-        ArrayList<MessageData> messages;
-        try {
-            FileInputStream fis = new FileInputStream(FILENAME);
-            ObjectInputStream ois = new ObjectInputStream(fis);
+    //Message is ready to be sent.
+    public void sendButtonClicked(View view){
+        if (!newMessageText.getText().toString().equals("")) {
+            //Only run if newMessageText is not empty
+            //calendar.getInstance();
+            //String timeStamp = calendar.toString();
+            String timeStamp = "0";
+            //Aside: Format "%Y-%m-%d %H:%M:%S"
 
-            //Sets messages ArrayList equal to object read from file.
-            messages = (ArrayList<MessageData>) ois.readObject();
+            //Add to database a new MessageData object with fields.
+            dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), timeStamp, userID));
 
-            ois.close();
-            fis.close();
+            //Clear text field
+            newMessageText.setText("");
+            Log.d(DEBUGTAG, "EditText cleared");
 
-            //Return updated ArrayList
-            return messages;
-        }catch (Exception e){
-            Log.d(DEBUGTAG, "Unable to read file");
+            //Refresh listView
+            populateListView();
+        }else {
+            Log.d(DEBUGTAG, "Message Field Empty");
         }
-        return messages = new ArrayList<MessageData>();
     }
 
-    protected void saveFile(ArrayList<MessageData> messages){
-       //Serialize array containing message data
-        try{
-            //ObjectOutputStream oos =  openFileOutput("SmackTalkerMessages", Context.MODE_PRIVATE);
-            FileOutputStream fos = new FileOutputStream(FILENAME);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+    private void populateListView(){
+        Cursor myCursor = dbHandler.getAllRows();
+        //What data you are going to populate the data with
+        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME};
+        //Where the data is going to go.
+        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime};
 
-            //Serializes the object to save file
-            oos.writeObject(messages);
+        //Define cursorAdapter, instantiated next line.
+        SimpleCursorAdapter myCursorAdapter;
+        //Get the context, the defined layout being used, the cursor, the columns being read, the location of info being stored, 0
+        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
-            oos.close();
-            fos.close();
+        //Set listView
+        ListView myListView = (ListView) findViewById(R.id.listView);
 
-        }catch (Exception e){
-            Log.d(DEBUGTAG, "Unable to serialize object");
-        }
+        //Sets listView adapter to the cursorAdapter
+        myListView.setAdapter(myCursorAdapter);
+
+    }
+
+    //For testing purposes.
+    public void addButtonClicked(View view){
+        Log.d(DEBUGTAG, "Temp");
     }
 }
