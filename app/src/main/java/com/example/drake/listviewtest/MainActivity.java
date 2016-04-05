@@ -3,6 +3,7 @@ package com.example.drake.listviewtest;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -67,9 +68,12 @@ public class MainActivity extends AppCompatActivity {
     public void sendButtonClicked(View view){
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
-            calendar.getInstance();
-            String timeStamp = calendar.toString();
-            //Aside: Format "%Y-%m-%d %H:%M:%S"
+
+
+            Time now = new Time();
+            now.setToNow();
+            String timeStamp = now.format("%Y-%m-%d %H:%M:%S");
+            //"%Y_%m_%d_%H_%M_%S"
 
             //Add to database a new MessageData object with fields.
             dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), timeStamp, userID));
