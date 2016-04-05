@@ -3,6 +3,7 @@ package com.example.drake.listviewtest;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +18,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 
@@ -33,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     EditText newMessageText;
     ListAdapter myListAdapter;
     ListView listView;
-
-    GregorianCalendar calendar = new GregorianCalendar();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +70,12 @@ public class MainActivity extends AppCompatActivity {
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
 
-
-            Time now = new Time();
-            now.setToNow();
-            String timeStamp = now.format("%Y-%m-%d %H:%M:%S");
-            //"%Y_%m_%d_%H_%M_%S"
+            //Intialize a calendar to current date
+            Calendar c = Calendar.getInstance();
+            //Create format for the date
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //Format the date and set it to a string
+            String timeStamp = df.format(c.getTime());
 
             //Add to database a new MessageData object with fields.
             dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), timeStamp, userID));
