@@ -103,7 +103,7 @@ class CustomAdapter extends ArrayAdapter<MessageData> {
         String singleMessageItem = messageDataArrayList.get(position).getMessage();
 
         //Creates text view
-        TextView myTextView = (TextView) customView.findViewById(R.id.listRowText);
+        TextView myTextView = (TextView) customView.findViewById(R.id.listRowMessage);
         //Creates image view
         ImageView myImageView = (ImageView) customView.findViewById((R.id.listRowImage));
 
