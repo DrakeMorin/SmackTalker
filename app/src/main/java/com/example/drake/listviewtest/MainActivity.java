@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //For testing purposes.
-    public void addButtonClicked(View view){
-        Log.d(DEBUGTAG, "Temp");
+    public void testButtonClicked(View view){
+        userID = newMessageText.toString();
+        newMessageText.setText("");
+        Log.d(DEBUGTAG, "userID updated");
     }
 }
