@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected final static String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
-    protected String userID;
+    protected String userID = "Bob";
 
     myDBHandler dbHandler;
 
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     //For testing purposes.
     public void testButtonClicked(View view){
-        userID = newMessageText.toString();
+        userID = newMessageText.getText().toString();
         newMessageText.setText("");
         Log.d(DEBUGTAG, "userID updated");
     }
