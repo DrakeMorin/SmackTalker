@@ -2,7 +2,6 @@ package com.example.drake.listviewtest;
 
 
 class MessageData {
-
     //Objects of this class will be used to hold the text messages sent and received
 
     //Holds the sent message

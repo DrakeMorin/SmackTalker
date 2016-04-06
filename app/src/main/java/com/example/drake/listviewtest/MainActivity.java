@@ -94,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
     private void populateListView(){
         Cursor myCursor = dbHandler.getAllRows();
         //What data you are going to populate the data with
-        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME};
+        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
         //Where the data is going to go.
-        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime};
+        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
 
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
