@@ -10,10 +10,10 @@
         android:layout_gravity="center_vertical">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="50dp"
             android:id="@+id/listRowImage"
-            android:src="@drawable/me"
+            android:src="@drawable/special_img"
             android:padding="5dp" />
 
         <TextView
