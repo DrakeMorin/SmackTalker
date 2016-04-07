@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    public boolean bluetoothOn = false;
     protected final static String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
     protected ArrayList<MessageData> messages;
@@ -64,6 +67,38 @@ public class MainActivity extends AppCompatActivity {
         //Populate listView with previous messages
         populateListView();
     }
+
+    //INFLATES ACTION BAR
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+
+    //CHECKS FOR IF ANY OF THE ITEMS IN THE ACTION BAR ARE PRESSED
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        if(item.getItemId() == R.id.action_bluetooth){
+            Log.d(DEBUGTAG, "Bluetooth button pressed");
+            btButtonClick();
+        }
+        return true;
+    }
+
+    public void btButtonClick() {
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(btAdapter.isEnabled()){
+            String address = btAdapter.getAddress();
+            String name = btAdapter.getName();
+            String statusText = name + ":" + address;
+
+        }
+
+    }
+
+
+
 
     //Message is ready to be sent.
     public void sendButtonClicked(View view){
