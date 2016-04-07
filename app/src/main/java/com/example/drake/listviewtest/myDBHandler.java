@@ -11,7 +11,7 @@ import android.util.Log;
 public class myDBHandler extends SQLiteOpenHelper{
 
     //If you update the structure of the database, change this constant for compatibility
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     //Name of database, must end in .db
     private static final String DATABASE_NAME = "SmackTalker.db";
     //Name of the table within the database

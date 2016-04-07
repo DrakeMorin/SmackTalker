@@ -43,7 +43,7 @@ class MessageData {
             R.drawable.x_img,
             R.drawable.y_img,
             R.drawable.z_img,
-            R.drawable.special_img
+            R.drawable.special_img,
     };
 
     public MessageData(String message, String time, String senderID) {
