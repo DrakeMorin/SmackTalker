@@ -15,15 +15,19 @@
         android:id="@+id/listView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/newMessageText">
+        android:layout_above="@+id/newMessageText"
+        android:clickable="false"
+        android:transcriptMode="alwaysScroll"
+        android:stackFromBottom="true">
     </ListView>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/newMessageText"
-        android:hint="Enter message"
+        android:hint="@string/messageEditTextHint"
         android:layout_toLeftOf="@+id/sendButton"
+        android:layout_toStartOf="@+id/sendButton"
         android:layout_alignBottom="@+id/testButton"
         android:layout_toRightOf="@+id/testButton"
         android:layout_toEndOf="@+id/testButton" />
@@ -32,7 +36,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send"
+        android:text="@string/sendButtonText"
         android:id="@+id/sendButton"
         android:layout_below="@+id/listView"
         android:layout_alignParentRight="true"
@@ -48,5 +52,5 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:onClick="addButtonClicked" />
+        android:onClick="testButtonClicked" />
 </RelativeLayout>

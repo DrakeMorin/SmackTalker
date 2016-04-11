@@ -11,7 +11,7 @@ import android.util.Log;
 public class myDBHandler extends SQLiteOpenHelper{
 
     //If you update the structure of the database, change this constant for compatibility
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
     //Name of database, must end in .db
     private static final String DATABASE_NAME = "SmackTalker.db";
     //Name of the table within the database
@@ -22,8 +22,9 @@ public class myDBHandler extends SQLiteOpenHelper{
     protected static final String COLUMN_MESSAGETEXT = "message";
     protected static final String COLUMN_SENDERID = "senderid";
     protected static final String COLUMN_TIME = "time";
+    protected static final String COLUMN_IMGID = "imgid";
 
-    protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME};
+    protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME, COLUMN_IMGID};
 
     public myDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -43,7 +44,8 @@ public class myDBHandler extends SQLiteOpenHelper{
                 COLUMN_ID + " INTERGER PRIMARY KEY, " + //Unique int identifier, automatically incrementing
                 COLUMN_MESSAGETEXT + " TEXT, " +
                 COLUMN_SENDERID + " TEXT, " +
-                COLUMN_TIME + " INTEGER " +
+                COLUMN_TIME + " INTEGER, " +
+                COLUMN_IMGID + " INTEGER " +
                 ");";
 
         //Passes the above command to SQL to execute
@@ -70,6 +72,7 @@ public class myDBHandler extends SQLiteOpenHelper{
         values.put(COLUMN_MESSAGETEXT, message.getMessage());
         values.put(COLUMN_SENDERID, message.getSenderID());
         values.put(COLUMN_TIME, message.getTime());
+        values.put(COLUMN_IMGID, message.getImgID());
         Log.d(MainActivity.DEBUGTAG, "ContentValues configured");
 
         //Creates a database we can write to!

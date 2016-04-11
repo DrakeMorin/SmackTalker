@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,8 +20,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
 
-
     EditText newMessageText;
     ListAdapter myListAdapter;
     ListView listView;
+
     myDBHandler dbHandler;
 
     @Override
@@ -69,10 +75,13 @@ public class MainActivity extends AppCompatActivity {
     public void sendButtonClicked(View view){
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
-            //calendar.getInstance();
-            //String timeStamp = calendar.toString();
-            String timeStamp = "0";
-            //Aside: Format "%Y-%m-%d %H:%M:%S"
+
+            //Intialize a calendar to current date
+            Calendar c = Calendar.getInstance();
+            //Create format for the date
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //Format the date and set it to a string
+            String timeStamp = df.format(c.getTime());
 
             //Add to database a new MessageData object with fields.
             dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), timeStamp, userID));
@@ -91,9 +100,9 @@ public class MainActivity extends AppCompatActivity {
     private void populateListView(){
         Cursor myCursor = dbHandler.getAllRows();
         //What data you are going to populate the data with
-        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME};
+        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
         //Where the data is going to go.
-        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime};
+        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
 
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
@@ -105,11 +114,12 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets listView adapter to the cursorAdapter
         myListView.setAdapter(myCursorAdapter);
-
     }
 
     //For testing purposes.
-    public void addButtonClicked(View view){
-        Log.d(DEBUGTAG, "Temp");
+    public void testButtonClicked(View view){
+        userID = newMessageText.getText().toString();
+        newMessageText.setText("");
+        Log.d(DEBUGTAG, "userID updated");
     }
 }
