@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets listView adapter to the cursorAdapter
         myListView.setAdapter(myCursorAdapter);
-
     }
 
     //For testing purposes.

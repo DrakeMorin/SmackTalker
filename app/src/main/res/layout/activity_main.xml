@@ -15,7 +15,10 @@
         android:id="@+id/listView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/newMessageText">
+        android:layout_above="@+id/newMessageText"
+        android:clickable="false"
+        android:transcriptMode="alwaysScroll"
+        android:stackFromBottom="true">
     </ListView>
 
     <EditText
