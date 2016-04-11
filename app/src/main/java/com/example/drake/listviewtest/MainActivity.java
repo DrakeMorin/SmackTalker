@@ -1,11 +1,14 @@
 package com.example.drake.listviewtest;
 
+import android.bluetooth.BluetoothAdapter;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,27 +23,33 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    public boolean bluetoothOn = false;
     protected final static String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
-    protected String userID = "Bob";
-
-    myDBHandler dbHandler;
+    protected ArrayList<MessageData> messages;
+    protected String userID;
+    private BluetoothAdapter btAdapter;
+    private Button Bluetooth;
 
     EditText newMessageText;
     ListAdapter myListAdapter;
     ListView listView;
 
+    myDBHandler dbHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
@@ -64,6 +73,38 @@ public class MainActivity extends AppCompatActivity {
         //Populate listView with previous messages
         populateListView();
     }
+
+    //INFLATES ACTION BAR
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+
+    //CHECKS FOR IF ANY OF THE ITEMS IN THE ACTION BAR ARE PRESSED
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        if(item.getItemId() == R.id.action_bluetooth){
+            Log.d(DEBUGTAG, "Bluetooth button pressed");
+            btButtonClick();
+        }
+        return true;
+    }
+
+    public void btButtonClick() {
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(btAdapter.isEnabled()){
+            String address = btAdapter.getAddress();
+            String name = btAdapter.getName();
+            String statusText = name + ":" + address;
+
+        }
+
+    }
+
+
+
 
     //Message is ready to be sent.
     public void sendButtonClicked(View view){
