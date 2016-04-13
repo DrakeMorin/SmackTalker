@@ -17,7 +17,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected String userID;
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
-
+    protected String userID = "Bob";
 
     EditText newMessageText;
     ListAdapter myListAdapter;
@@ -82,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
 
     //CHECKS FOR IF ANY OF THE ITEMS IN THE ACTION BAR ARE PRESSED
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId() == R.id.action_bluetooth){
+        if (item.getItemId() == R.id.action_bluetooth) {
             Log.d(DEBUGTAG, "Bluetooth button pressed");
             btButtonClick();
         }
@@ -103,18 +102,14 @@ public class MainActivity extends AppCompatActivity {
             String statusText = name + ":" + address;
 
             Toast toast = new Toast(getApplicationContext());
-            toast.setGravity(Gravity.BOTTOM| Gravity.LEFT, 0, 0);
+            toast.setGravity(Gravity.BOTTOM | Gravity.LEFT, 0, 0);
             toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, toast.LENGTH_LONG).show();
-
         }
 
     }
 
-
-
-
     //Message is ready to be sent.
-    public void sendButtonClicked(View view){
+    public void sendButtonClicked(View view) {
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
             //calendar.getInstance();
@@ -131,17 +126,18 @@ public class MainActivity extends AppCompatActivity {
 
             //Refresh listView
             populateListView();
-        }else {
+        } else {
             Log.d(DEBUGTAG, "Message Field Empty");
         }
     }
 
-    private void populateListView(){
+    private void populateListView() {
         Cursor myCursor = dbHandler.getAllRows();
         //What data you are going to populate the data with
-        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME};
+        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
+
         //Where the data is going to go.
-        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime};
+        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
 
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
@@ -153,11 +149,12 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets listView adapter to the cursorAdapter
         myListView.setAdapter(myCursorAdapter);
-
     }
 
     //For testing purposes.
-    public void addButtonClicked(View view){
-        Log.d(DEBUGTAG, "Temp");
+    public void testButtonClicked(View view){
+        userID = newMessageText.getText().toString();
+        newMessageText.setText("");
+        Log.d(DEBUGTAG, "userID updated");
     }
 }
