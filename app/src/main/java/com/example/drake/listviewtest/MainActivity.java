@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Stuff
     private void populateListView(){
         Cursor myCursor = dbHandler.getAllRows();
         //What data you are going to populate the data with
