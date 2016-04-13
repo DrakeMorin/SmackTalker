@@ -10,3 +10,5 @@ Bluetooth is one of the least used modes of communication between devices.  We w
 The coding for Bluetooth is based on a conversation.  There is an initial greeting, followed by a set of questions between the devices.  If the questions are 'correct' the devices will connect.
 
 Having learned Git and GitHub, we plan to use GitHub to help our collaboration, and track our project over its development. Keeping with that, we will endeavour to make commits based on each logical change.
+
+Note that many commits from April 11 - 13 were attempted fixes at resolving missing code. This issue was eventually resolved.
