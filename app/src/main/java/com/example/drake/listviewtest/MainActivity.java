@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected final static String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
-    protected ArrayList<MessageData> messages;
-    protected String userID;
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
     protected String userID = "Bob";
