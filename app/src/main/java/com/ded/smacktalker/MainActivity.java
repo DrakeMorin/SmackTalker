@@ -16,6 +16,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -103,10 +106,12 @@ public class MainActivity extends AppCompatActivity {
     public void sendButtonClicked(View view) {
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
-            //calendar.getInstance();
-            //String timeStamp = calendar.toString();
-            String timeStamp = "0";
-            //Aside: Format "%Y-%m-%d %H:%M:%S"
+            //Intialize a calendar to current date
+            Calendar c = Calendar.getInstance();
+            //Create format for the date
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //Format the date and set it to a string
+            String timeStamp = df.format(c.getTime());
 
             //Add to database a new MessageData object with fields.
             dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), timeStamp, userID));
