@@ -1,4 +1,4 @@
-package com.example.drake.listviewtest;
+package com.ded.smacktalker;
 
 
 import android.content.ContentValues;
@@ -125,6 +125,7 @@ public class myDBHandler extends SQLiteOpenHelper{
             }
         }
         db.close();
+        c.close();
         return dbString;
     }
 

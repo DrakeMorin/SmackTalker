@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.example.drake.listviewtest"
+        applicationId "com.ded.smacktalker.listviewtest"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1

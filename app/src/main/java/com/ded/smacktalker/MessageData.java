@@ -1,4 +1,4 @@
-package com.example.drake.listviewtest;
+package com.ded.smacktalker;
 
 
 class MessageData {

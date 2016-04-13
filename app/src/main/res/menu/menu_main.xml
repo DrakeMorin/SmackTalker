@@ -8,5 +8,4 @@
         android:title="Bluetooth"
         app:showAsAction="always" />
 
-
 </menu>
