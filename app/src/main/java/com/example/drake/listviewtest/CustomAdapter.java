@@ -11,13 +11,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-//TEST COMMENT//
-
-
 /**
  * Created by Drake on 2016-03-01.
  */
 class CustomAdapter extends ArrayAdapter<MessageData> {
+//app/src/main/java/com/example/drake/listviewtest/CustomAdapter.java
 
     ArrayList<MessageData> messageDataArrayList;
 
@@ -26,33 +24,33 @@ class CustomAdapter extends ArrayAdapter<MessageData> {
     //to each image. For example, the picture for A would be at index 0, Z at index 25.
     //NOTE: Non-letter chars will all be assigned ID 26 which will be generic.
     int[] myImageArray = new int[]{
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
-            R.drawable.me,
-            R.drawable.you,
 
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
+            R.drawable.me,
+            R.drawable.you,
     };
 
     public CustomAdapter(Context context, ArrayList<MessageData> resource) {

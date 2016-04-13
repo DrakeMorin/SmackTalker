@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,20 +20,21 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    public boolean bluetoothOn = false;
     protected final static String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
     protected ArrayList<MessageData> messages;
@@ -39,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
 
+    protected String userID = "Bob";
+
+    myDBHandler dbHandler;
 
     EditText newMessageText;
     ListAdapter myListAdapter;
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
@@ -112,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     //Message is ready to be sent.
     public void sendButtonClicked(View view) {
         if (!newMessageText.getText().toString().equals("")) {
@@ -155,4 +161,11 @@ public class MainActivity extends AppCompatActivity {
         myListView.setAdapter(myCursorAdapter);
 
     }
+
+    -    //For testing purposes.
+ -    public void testButtonClicked(View view){
+ -        userID = newMessageText.getText().toString();
+ -        newMessageText.setText("");
+ -        Log.d(DEBUGTAG, "userID updated");
+      }
 }
