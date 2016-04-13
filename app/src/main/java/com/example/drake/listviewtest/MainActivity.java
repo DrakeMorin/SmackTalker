@@ -1,15 +1,12 @@
 package com.example.drake.listviewtest;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,27 +21,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
 
-    public boolean bluetoothOn = false;
+
     protected final static String DEBUGTAG = "DED";
     public final String FILENAME = "SmackTalkerMessages.ded";
     protected ArrayList<MessageData> messages;
     protected String userID;
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
-
     protected String userID = "Bob";
-
-    myDBHandler dbHandler;
 
     EditText newMessageText;
     ListAdapter myListAdapter;
@@ -106,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //BLUETOOTH IS ALREADY ON, TOAST THE USER
-        if (btAdapter.isEnabled()) {
+        if(btAdapter.isEnabled()){
             String address = btAdapter.getAddress();
             String name = btAdapter.getName();
             String statusText = name + ":" + address;
@@ -114,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
             Toast toast = new Toast(getApplicationContext());
             toast.setGravity(Gravity.BOTTOM | Gravity.LEFT, 0, 0);
             toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, toast.LENGTH_LONG).show();
-
         }
 
     }
@@ -145,9 +134,10 @@ public class MainActivity extends AppCompatActivity {
     private void populateListView() {
         Cursor myCursor = dbHandler.getAllRows();
         //What data you are going to populate the data with
-        String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME};
+        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
+
         //Where the data is going to go.
-        int[] toViewIDs = new int[]{R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime};
+        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
 
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
@@ -159,13 +149,12 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets listView adapter to the cursorAdapter
         myListView.setAdapter(myCursorAdapter);
-
     }
 
-    -    //For testing purposes.
- -    public void testButtonClicked(View view){
- -        userID = newMessageText.getText().toString();
- -        newMessageText.setText("");
- -        Log.d(DEBUGTAG, "userID updated");
-      }
+    //For testing purposes.
+    public void testButtonClicked(View view){
+        userID = newMessageText.getText().toString();
+        newMessageText.setText("");
+        Log.d(DEBUGTAG, "userID updated");
+    }
 }
