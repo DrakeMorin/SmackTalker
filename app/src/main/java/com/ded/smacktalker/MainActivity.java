@@ -25,14 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected final static String DEBUGTAG = "DED";
-    public final String FILENAME = "SmackTalkerMessages.ded";
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
     protected String userID = "Alpha";
 
     EditText newMessageText;
-    ListAdapter myListAdapter;
-    ListView listView;
     myDBHandler dbHandler;
 
     @Override
