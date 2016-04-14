@@ -1,9 +1,12 @@
 package com.ded.smacktalker;
 
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     EditText newMessageText;
     myDBHandler dbHandler;
+
+    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,5 +154,18 @@ public class MainActivity extends AppCompatActivity {
         //Send message as if it was received from someone else.
         dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
+        populateListView();
+        createNotification();
+    }
+
+    public void createNotification(){
+        mBuilder.setSmallIcon(R.drawable.img);
+        mBuilder.setContentTitle("Notification Alert, Click Me!");
+        mBuilder.setContentText("Hi, This is Android Notification Detail!");
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // notificationID allows you to update the notification later on.
+        mNotificationManager.notify(0, mBuilder.build());
     }
 }
