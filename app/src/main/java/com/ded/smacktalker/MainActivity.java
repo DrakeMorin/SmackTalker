@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public final String FILENAME = "SmackTalkerMessages.ded";
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
-    protected String userID = "Bob";
+    protected String userID = "Alpha";
 
     EditText newMessageText;
     ListAdapter myListAdapter;
@@ -149,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
 
     //For testing purposes.
     public void testButtonClicked(View view){
-        userID = newMessageText.getText().toString();
+        //Send message as if it was received from someone else.
+        dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
-        Log.d(DEBUGTAG, "userID updated");
     }
 }
