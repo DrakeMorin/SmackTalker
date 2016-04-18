@@ -1,8 +1,10 @@
 package com.ded.smacktalker;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +20,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     EditText newMessageText;
     myDBHandler dbHandler;
 
-    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,17 +156,36 @@ public class MainActivity extends AppCompatActivity {
         dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
         populateListView();
-        createNotification();
+        createNotification(newMessageText.getText().toString());
     }
 
-    public void createNotification(){
+    public void createNotification(String notifyText){
+        Toast.makeText(MainActivity.this, "Toast Message", Toast.LENGTH_LONG).show();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setSmallIcon(R.drawable.img);
         mBuilder.setContentTitle("Notification Alert, Click Me!");
-        mBuilder.setContentText("Hi, This is Android Notification Detail!");
+        mBuilder.setContentText(notifyText);
 
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //Creates intent, with the context from MainActivity.
+        Intent resultIntent = new Intent(MainActivity.this, MainActivity.class);
+
+        //This PendingIntent opens the MainActivity class (for when notification is clicked)
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        //Set the on notification click behaviour to PendingIntent
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // notificationID allows you to update the notification later on.
-        mNotificationManager.notify(0, mBuilder.build());
+        //mBuilder.build() returns a Notification containing above specifications.
+        mNotifyMgr.notify(0, mBuilder.build());
     }
 }
