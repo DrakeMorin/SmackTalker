@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected final static String DEBUGTAG = "DED";
-    public final String FILENAME = "SmackTalkerMessages.ded";
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
     protected String userID = "Bob";
@@ -43,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
+
+        if(userID == null){
+            //UserID has not been set.
+        }
 
         //Create text view for user written messages
         newMessageText = (EditText) findViewById(R.id.newMessageText);
