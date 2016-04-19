@@ -6,6 +6,7 @@
         android:id="@+id/action_bluetooth"
         android:icon="@drawable/bluetooth_icon"
         android:title="Bluetooth"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        />
 
 </menu>

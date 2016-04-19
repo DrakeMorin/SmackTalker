@@ -1,6 +1,8 @@
 package com.ded.smacktalker;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -98,6 +100,14 @@ public class MainActivity extends AppCompatActivity {
             Toast toast = new Toast(getApplicationContext());
             toast.setGravity(Gravity.BOTTOM | Gravity.LEFT, 0, 0);
             toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, toast.LENGTH_LONG).show();
+        }
+
+        else{
+            String actionStateChanged = BluetoothAdapter.ACTION_STATE_CHANGED;
+            String actionRequestEnable = BluetoothAdapter.ACTION_REQUEST_ENABLE;
+            IntentFilter Filter = new IntentFilter(actionStateChanged);
+            startActivityForResult(new Intent(actionRequestEnable), 0);
+
         }
 
     }
