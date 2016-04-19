@@ -1,5 +1,6 @@
 package com.ded.smacktalker;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
@@ -166,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
         mBuilder.setSmallIcon(R.drawable.img);
         mBuilder.setContentTitle("Notification Alert, Click Me!");
         mBuilder.setContentText(notifyText);
+        //Notification will disappear when clicked on.
+        mBuilder.setAutoCancel(true);
 
         //Creates intent, with the context from MainActivity.
         Intent resultIntent = new Intent(MainActivity.this, MainActivity.class);
