@@ -2,6 +2,7 @@ package com.ded.smacktalker;
 
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
     protected String userID = "Bob";
+    private static final String USERIDKEY = "userID";
 
     EditText newMessageText;
     ListAdapter myListAdapter;
@@ -44,10 +45,17 @@ public class MainActivity extends AppCompatActivity {
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
 
-        if(userID == null){
+        if(userID != null){
+
             //UserID has not been set.
             DialogFragment newFragment = new SetUserIDDialog();
-            newFragment.show(getFragmentManager(), "setUserID");
+            newFragment.show(getFragmentManager(), USERIDKEY);
+
+            //Save the userID to preferences.
+            SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            //Stores the userID under the key specified in the final USERIDKEY
+            editor.putString(USERIDKEY, userID);
         }
 
         //Create text view for user written messages
