@@ -13,7 +13,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:id="@+id/listRowImage"
-            android:src="@drawable/special_img"
+            android:src="@mipmap/special_img"
             android:padding="5dp" />
 
         <TextView

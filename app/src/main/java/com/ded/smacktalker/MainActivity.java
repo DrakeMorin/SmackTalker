@@ -1,5 +1,6 @@
 package com.ded.smacktalker;
 
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(userID == null){
             //UserID has not been set.
+            DialogFragment newFragment = new SetUserIDDialog();
+            newFragment.show(getFragmentManager(), "setUserID");
         }
 
         //Create text view for user written messages
