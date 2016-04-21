@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected final static String DEBUGTAG = "DED";
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
-    protected String userID = "Bob";
+    protected static String userID = "Bob";
     private static final String USERIDKEY = "userID";
 
     EditText newMessageText;
