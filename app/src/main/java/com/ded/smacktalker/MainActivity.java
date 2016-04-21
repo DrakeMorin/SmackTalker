@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        //Null is the default value. If no userID is saved, the default value assigned will ne null.
+        userID = prefs.getString(USERIDKEY, null);
 
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
@@ -52,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             newFragment.show(getFragmentManager(), USERIDKEY);
 
             //Save the userID to preferences.
-            SharedPreferences prefs = getPreferences(MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             //Stores the userID under the key specified in the final USERIDKEY
             editor.putString(USERIDKEY, userID);
+            editor.commit();
         }
 
         //Create text view for user written messages
