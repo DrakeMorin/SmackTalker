@@ -24,7 +24,6 @@ public class UserIDFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.dialog_fragment, container, false);
 
-        Button confirmUserID = (Button) view.findViewById(R.id.confirmUserID);
         userIDText = (EditText) view.findViewById(R.id.userID);
 
         return view;

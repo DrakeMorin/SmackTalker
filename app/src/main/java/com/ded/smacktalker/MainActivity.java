@@ -2,8 +2,10 @@ package com.ded.smacktalker;
 
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     myDBHandler dbHandler;
 
+    private AlertDialog.Builder dialogBuilder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +52,11 @@ public class MainActivity extends AppCompatActivity {
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
 
-        if(userID != null){
-
-            //UserID has not been set.
-            DialogFragment newFragment = new SetUserIDDialog();
-            newFragment.show(getFragmentManager(), USERIDKEY);
+        if(userID == null){
+            //UserID has not been set
+            setUserID();
+            //DialogFragment newFragment = new SetUserIDDialog();
+            //newFragment.show(getFragmentManager(), USERIDKEY);
 
             //Save the userID to preferences.
             SharedPreferences.Editor editor = prefs.edit();
@@ -169,5 +173,31 @@ public class MainActivity extends AppCompatActivity {
         userID = newMessageText.getText().toString();
         newMessageText.setText("");
         Log.d(DEBUGTAG, "userID updated");
+    }
+
+    private void setUserID(){
+        dialogBuilder = new AlertDialog.Builder(this);
+        final EditText userIDText = new EditText(this);//= (EditText) findViewById(R.id.userID);
+
+        dialogBuilder.setMessage("Please set your username");
+        dialogBuilder.setView(userIDText);
+        dialogBuilder.setPositiveButton("Set Username", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                userID = userIDText.getText().toString();
+                Toast.makeText(MainActivity.this, "UserID set", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Assign random userID
+                Toast.makeText(MainActivity.this, "Username is randomly generated", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        AlertDialog aDialog = dialogBuilder.create();
+        aDialog.show();
+
     }
 }
