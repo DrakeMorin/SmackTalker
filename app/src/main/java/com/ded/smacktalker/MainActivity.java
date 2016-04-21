@@ -30,33 +30,29 @@ public class MainActivity extends AppCompatActivity {
     protected final static String DEBUGTAG = "DED";
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
-    protected static String userID = "Bob";
+    protected static String userID;
     private static final String USERIDKEY = "userID";
 
     EditText newMessageText;
-    ListAdapter myListAdapter;
-    ListView listView;
     myDBHandler dbHandler;
-
-    private AlertDialog.Builder dialogBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Since the last three parameters are constants of the class, null is passed.
+        dbHandler = new myDBHandler(this, null, null, 1);
+
+
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
         //Null is the default value. If no userID is saved, the default value assigned will ne null.
         userID = prefs.getString(USERIDKEY, null);
 
-        //Since the last three parameters are constants of the class, null is passed.
-        dbHandler = new myDBHandler(this, null, null, 1);
 
         if(userID == null){
             //UserID has not been set
             setUserID();
-            //DialogFragment newFragment = new SetUserIDDialog();
-            //newFragment.show(getFragmentManager(), USERIDKEY);
 
             //Save the userID to preferences.
             SharedPreferences.Editor editor = prefs.edit();
@@ -81,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );*/
+
         //Populate listView with previous messages
         populateListView();
     }
@@ -176,11 +173,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUserID(){
-        dialogBuilder = new AlertDialog.Builder(this);
-        final EditText userIDText = new EditText(this);//= (EditText) findViewById(R.id.userID);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
+        //Create EditText to be used in dialog
+        final EditText userIDText = new EditText(this);
+
+        //Set dialog title
+        dialogBuilder.setTitle("UserID");
+        //Set dialog message
         dialogBuilder.setMessage("Please set your username");
+        //Add edit text to dialog
         dialogBuilder.setView(userIDText);
+
+        //This button will set userID
         dialogBuilder.setPositiveButton("Set Username", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -188,16 +193,18 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "UserID set", Toast.LENGTH_SHORT).show();
             }
         });
-        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        //This button will randomly generate a userID
+        dialogBuilder.setNegativeButton("Randomize", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Assign random userID
-                Toast.makeText(MainActivity.this, "Username is randomly generated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
             }
         });
 
+        //Create the dialog
         AlertDialog aDialog = dialogBuilder.create();
+        //Show the dialog
         aDialog.show();
-
     }
 }
