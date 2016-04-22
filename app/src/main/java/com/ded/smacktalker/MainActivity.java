@@ -19,6 +19,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -35,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
 
     EditText newMessageText;
     myDBHandler dbHandler;
+
+    //Used for randomly generated userIDs
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    static SecureRandom rnd = new SecureRandom();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +204,16 @@ public class MainActivity extends AppCompatActivity {
         dialogBuilder.setNegativeButton("Randomize", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //Assign random userID
+                //Assign randomly generated userID
+
+                int len = 8;
+                StringBuilder sb = new StringBuilder( len );
+                //Random # created which points to a string of all possible chars.
+                //Appends that char onto the userID and repeats until desired length.
+                for( int i = 0; i < len; i++ ) {
+                    sb.append(AB.charAt(rnd.nextInt(AB.length())));
+                }
+                userID = sb.toString();
                 Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
             }
         });
