@@ -53,12 +53,6 @@ public class MainActivity extends AppCompatActivity {
         if(userID == null){
             //UserID has not been set
             setUserID();
-
-            //Save the userID to preferences.
-            SharedPreferences.Editor editor = prefs.edit();
-            //Stores the userID under the key specified in the final USERIDKEY
-            editor.putString(USERIDKEY, userID);
-            editor.commit();
         }
 
         //Create text view for user written messages
@@ -191,6 +185,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 userID = userIDText.getText().toString();
                 Toast.makeText(MainActivity.this, "UserID set", Toast.LENGTH_SHORT).show();
+
+                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                //Save the userID to preferences.
+                SharedPreferences.Editor editor = prefs.edit();
+                //Stores the userID under the key specified in the final USERIDKEY
+                editor.putString(USERIDKEY, userID);
+                editor.commit();
             }
         });
         //This button will randomly generate a userID
