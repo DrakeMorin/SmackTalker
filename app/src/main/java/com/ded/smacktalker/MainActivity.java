@@ -157,11 +157,22 @@ public class MainActivity extends AppCompatActivity {
         dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
         populateListView();
-        createNotification(newMessageText.getText().toString());
+        createNotification(newMessageText.getText().toString(), 0);
     }
 
-    public void createNotification(String notifyText){
-        Toast.makeText(MainActivity.this, "Toast Message", Toast.LENGTH_LONG).show();
+    public void createNotification(String notifyText, int notifyID){
+        //Toast.makeText(MainActivity.this, "Toast Message", Toast.LENGTH_LONG).show();
+
+        /*
+        * Once Bluetooth is working, revisit this method. The goal is that as more messages are
+        * received but not read, this method will update the notification to show all unread messages
+        * separated by hard returns. This will require tracking what messages have been received
+        * since the app was last opened, and adding those messages to String notifyText.
+        *
+        * Finally, the notification ID should be unique to each conversation. As such, I will
+        * base it off the integer value of the sender's userID. This should ensure that if you receive
+        * multiple messages from different conversations, they all get their own notification.
+         */
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setSmallIcon(R.drawable.img);
@@ -189,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
         // notificationID allows you to update the notification later on.
         //mBuilder.build() returns a Notification containing above specifications.
-        mNotifyMgr.notify(0, mBuilder.build());
+        mNotifyMgr.notify(notifyID, mBuilder.build());
     }
+
 }
