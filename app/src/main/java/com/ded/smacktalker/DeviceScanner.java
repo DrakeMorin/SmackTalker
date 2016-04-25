@@ -16,8 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import java.util.Set;
 
-/**
- * Created by Emma Kate on April 1 2016.
 
 class DeviceScanner {
 
