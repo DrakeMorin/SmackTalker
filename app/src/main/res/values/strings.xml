@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ListView Test</string>
+    <string name="app_name">Smack Talker</string>
     <string name="sendButtonText">Send</string>
     <string name="messageEditTextHint">Enter message</string>
 </resources>

@@ -1,13 +1,19 @@
 package com.ded.smacktalker;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -19,7 +25,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,12 +40,14 @@ public class MainActivity extends AppCompatActivity {
     protected static String userID;
     private static final String USERIDKEY = "userID";
 
+
     EditText newMessageText;
     myDBHandler dbHandler;
 
     //Used for randomly generated userIDs
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd = new SecureRandom();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,9 +174,54 @@ public class MainActivity extends AppCompatActivity {
 
     //For testing purposes.
     public void testButtonClicked(View view){
-        userID = newMessageText.getText().toString();
+        //Send message as if it was received from someone else.
+        dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
-        Log.d(DEBUGTAG, "userID updated");
+        populateListView();
+        createNotification(newMessageText.getText().toString(), 0);
+    }
+
+    public void createNotification(String notifyText, int notifyID){
+        //Toast.makeText(MainActivity.this, "Toast Message", Toast.LENGTH_LONG).show();
+
+        /*
+        * Once Bluetooth is working, revisit this method. The goal is that as more messages are
+        * received but not read, this method will update the notification to show all unread messages
+        * separated by hard returns. This will require tracking what messages have been received
+        * since the app was last opened, and adding those messages to String notifyText.
+        *
+        * Finally, the notification ID should be unique to each conversation. As such, I will
+        * base it off the integer value of the sender's userID. This should ensure that if you receive
+        * multiple messages from different conversations, they all get their own notification.
+         */
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        mBuilder.setSmallIcon(R.drawable.img);
+        mBuilder.setContentTitle("Notification Alert, Click Me!");
+        mBuilder.setContentText(notifyText);
+        //Notification will disappear when clicked on.
+        mBuilder.setAutoCancel(true);
+
+        //Creates intent, with the context from MainActivity.
+        Intent resultIntent = new Intent(MainActivity.this, MainActivity.class);
+
+        //This PendingIntent opens the MainActivity class (for when notification is clicked)
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        //Set the on notification click behaviour to PendingIntent
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // notificationID allows you to update the notification later on.
+        //mBuilder.build() returns a Notification containing above specifications.
+        mNotifyMgr.notify(notifyID, mBuilder.build());
     }
 
     private void setUserID(){
