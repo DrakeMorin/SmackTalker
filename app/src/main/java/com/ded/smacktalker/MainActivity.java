@@ -28,6 +28,7 @@ import android.widget.Toast;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             //Intialize a calendar to current date
             Calendar c = Calendar.getInstance();
             //Create format for the date
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             //Format the date and set it to a string
             String timeStamp = df.format(c.getTime());
 
