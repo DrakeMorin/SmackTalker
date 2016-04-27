@@ -152,6 +152,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onMessageReceived(MessageData md){
+        //This method is to be called when a bluetooth message is received
+        //It adds the message to the database and refreshes the listView
+        dbHandler.addMessage(md);
+        populateListView();
+    }
+
     private void populateListView() {
         Cursor myCursor = dbHandler.getAllRows();
         //What data you are going to populate the data with
