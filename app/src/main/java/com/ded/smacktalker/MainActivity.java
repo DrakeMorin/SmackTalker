@@ -118,11 +118,9 @@ public class MainActivity extends AppCompatActivity {
         if(btAdapter.isEnabled()){
             String address = btAdapter.getAddress();
             String name = btAdapter.getName();
-            String statusText = name + ":" + address;
+            String statusText = name + ": " + address;
 
-            Toast toast = new Toast(getApplicationContext());
-            toast.setGravity(Gravity.BOTTOM | Gravity.LEFT, 0, 0);
-            toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, Toast.LENGTH_LONG).show();
         }
 
     }
