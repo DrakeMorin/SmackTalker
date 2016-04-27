@@ -182,9 +182,8 @@ public class MainActivity extends AppCompatActivity {
     //For testing purposes.
     public void testButtonClicked(View view){
         //Send message as if it was received from someone else.
-        dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
+        onMessageReceived(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
-        populateListView();
         createNotification(newMessageText.getText().toString(), 0);
     }
 
@@ -256,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = prefs.edit();
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
-                editor.commit();
+                editor.apply();
             }
         });
         //This button will randomly generate a userID
@@ -274,6 +273,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 userID = sb.toString();
                 Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
+
+                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                //Save the userID to preferences.
+                SharedPreferences.Editor editor = prefs.edit();
+                //Stores the userID under the key specified in the final USERIDKEY
+                editor.putString(USERIDKEY, userID);
+                editor.apply();
             }
         });
 
