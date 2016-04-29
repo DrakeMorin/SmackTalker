@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -72,15 +73,17 @@ public class MainActivity extends AppCompatActivity {
         //Create text view for user written messages
         newMessageText = (EditText) findViewById(R.id.newMessageText);
 
-        /*//Add item onClickListener
+        /*ListView listView = (ListView) findViewById(R.id.listView);
+        //Add item onClickListener
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
                         //Get the string value of the view that was touched at position # (which is stored in position
                         //This WILL enable copy and pasting later.
-                        String message = String.valueOf(parent.getItemAtPosition(position));
+                        String message = String.valueOf(parent.getItemAtPosition(position).toString());
                         Log.d("DED", message);
                     }
                 }
