@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd = new SecureRandom();
 
+    //Preferences which carry across run time sessions
+    SharedPreferences prefs = getPreferences(MODE_PRIVATE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         dbHandler = new myDBHandler(this, null, null, 1);
 
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+
         //Null is the default value. If no userID is saved, the default value assigned will ne null.
         userID = prefs.getString(USERIDKEY, null);
 
@@ -247,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
                 userID = userIDText.getText().toString();
                 Toast.makeText(MainActivity.this, "UserID set", Toast.LENGTH_SHORT).show();
 
-                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
                 //Save the userID to preferences.
                 SharedPreferences.Editor editor = prefs.edit();
                 //Stores the userID under the key specified in the final USERIDKEY
@@ -271,7 +272,6 @@ public class MainActivity extends AppCompatActivity {
                 userID = sb.toString();
                 Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
 
-                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
                 //Save the userID to preferences.
                 SharedPreferences.Editor editor = prefs.edit();
                 //Stores the userID under the key specified in the final USERIDKEY
