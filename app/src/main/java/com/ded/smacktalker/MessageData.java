@@ -54,6 +54,11 @@ class MessageData {
         this.imgID = parseSenderID();
     }
 
+    @Override
+    public String toString() {
+        return getMessage();
+    }
+
     private int parseSenderID(){
         //This method determines what the first char of senderID is, and assigns an int
         //to it based on what letter it is (0 - 26). A is 0, Z is 25.

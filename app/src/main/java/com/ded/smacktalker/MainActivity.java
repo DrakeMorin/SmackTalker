@@ -1,9 +1,7 @@
 package com.ded.smacktalker;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -15,19 +13,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -71,15 +68,17 @@ public class MainActivity extends AppCompatActivity {
         //Create text view for user written messages
         newMessageText = (EditText) findViewById(R.id.newMessageText);
 
-        /*//Add item onClickListener
+        /*ListView listView = (ListView) findViewById(R.id.listView);
+        //Add item onClickListener
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
                         //Get the string value of the view that was touched at position # (which is stored in position
                         //This WILL enable copy and pasting later.
-                        String message = String.valueOf(parent.getItemAtPosition(position));
+                        String message = String.valueOf(parent.getItemAtPosition(position).toString());
                         Log.d("DED", message);
                     }
                 }
@@ -118,11 +117,9 @@ public class MainActivity extends AppCompatActivity {
         if(btAdapter.isEnabled()){
             String address = btAdapter.getAddress();
             String name = btAdapter.getName();
-            String statusText = name + ":" + address;
+            String statusText = name + ": " + address;
 
-            Toast toast = new Toast(getApplicationContext());
-            toast.setGravity(Gravity.BOTTOM | Gravity.LEFT, 0, 0);
-            toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, Toast.LENGTH_LONG).show();
         }
 
     }
@@ -134,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             //Intialize a calendar to current date
             Calendar c = Calendar.getInstance();
             //Create format for the date
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             //Format the date and set it to a string
             String timeStamp = df.format(c.getTime());
 
@@ -150,6 +147,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(DEBUGTAG, "Message Field Empty");
         }
+    }
+
+    public void onMessageReceived(MessageData md){
+        //This method is to be called when a bluetooth message is received
+        //It adds the message to the database and refreshes the listView
+        dbHandler.addMessage(md);
+        populateListView();
     }
 
     private void populateListView() {
@@ -175,9 +179,8 @@ public class MainActivity extends AppCompatActivity {
     //For testing purposes.
     public void testButtonClicked(View view){
         //Send message as if it was received from someone else.
-        dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
+        onMessageReceived(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
-        populateListView();
         createNotification(newMessageText.getText().toString(), 0);
     }
 
@@ -249,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = prefs.edit();
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
-                editor.commit();
+                editor.apply();
             }
         });
         //This button will randomly generate a userID
@@ -267,6 +270,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 userID = sb.toString();
                 Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
+
+                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                //Save the userID to preferences.
+                SharedPreferences.Editor editor = prefs.edit();
+                //Stores the userID under the key specified in the final USERIDKEY
+                editor.putString(USERIDKEY, userID);
+                editor.apply();
             }
         });
 
