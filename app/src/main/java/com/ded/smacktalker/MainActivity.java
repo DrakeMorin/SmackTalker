@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText userIDText = new EditText(this);
 
         //Set dialog title
-        dialogBuilder.setTitle("UserID");
+        dialogBuilder.setTitle("Set Username");
         //Set dialog message
         dialogBuilder.setMessage("Please set your username");
         //Add edit text to dialog
