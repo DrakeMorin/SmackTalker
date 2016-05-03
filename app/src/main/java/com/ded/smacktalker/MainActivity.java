@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     protected static String userID;
     private static final String USERIDKEY = "userID";
 
-
     EditText newMessageText;
     myDBHandler dbHandler;
 
@@ -48,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
     //Preferences which carry across run time sessions
     SharedPreferences prefs = getPreferences(MODE_PRIVATE);
 
+    //Will contain all messages currently unread
+    StringBuilder unread = new StringBuilder();
+    //Will store whether the app is in the fore or background
+    private boolean inBack = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,11 +60,8 @@ public class MainActivity extends AppCompatActivity {
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
 
-
-
         //Null is the default value. If no userID is saved, the default value assigned will ne null.
         userID = prefs.getString(USERIDKEY, null);
-
 
         if(userID == null){
             //UserID has not been set
@@ -90,6 +91,24 @@ public class MainActivity extends AppCompatActivity {
         populateListView();
     }
 
+    @Override
+    protected void onResume() {
+        //When the app is resumed from background, assume all messages are read.
+        //Clear the unread bit.
+        unread.delete(0, unread.length());
+
+        //App is now in the foreground, not the back.
+        inBack = false;
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        //Set bool saying app is running in background
+        inBack = true;
+        super.onPause();
+    }
+
     //INFLATES ACTION BAR
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(DEBUGTAG, "Options Menu Inflated");
         return true;
     }
-
 
     //CHECKS FOR IF ANY OF THE ITEMS IN THE ACTION BAR ARE PRESSED
     @Override
@@ -109,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     //IF BLUETOOTH BUTTON IS CLICKED, TURN ON/OFF BLUETOOTH AND ALERT THE USER
     public void btButtonClick() {
