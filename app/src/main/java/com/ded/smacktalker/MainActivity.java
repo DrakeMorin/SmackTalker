@@ -209,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
     //For testing purposes.
     public void testButtonClicked(View view){
         //Send message as if it was received from someone else.
+        inBack = true;
         onMessageReceived(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
         createNotification();
