@@ -42,13 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
     //Used for randomly generated userIDs
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    static SecureRandom rnd = new SecureRandom();
+    static SecureRandom rnd;
 
     //Preferences which carry across run time sessions
-    SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+    SharedPreferences prefs;
 
     //Will contain all messages currently unread
-    StringBuilder unread = new StringBuilder();
+    StringBuilder unread;
     //Will store whether the app is in the fore or background
     private boolean inBack = false;
 
@@ -68,8 +68,11 @@ public class MainActivity extends AppCompatActivity {
             setUserID();
         }
 
-        //Create text view for user written messages
+        //Variable instantiation
         newMessageText = (EditText) findViewById(R.id.newMessageText);
+        prefs = getPreferences(MODE_PRIVATE);
+        rnd = new SecureRandom();
+        unread = new StringBuilder();
 
         /*ListView listView = (ListView) findViewById(R.id.listView);
         //Add item onClickListener
