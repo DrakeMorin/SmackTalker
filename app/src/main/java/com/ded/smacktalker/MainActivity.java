@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         if(inBack){
             //The app is in the background, the message is unread
             unread.append(md.getMessage());
-            unread.append("/n");
+            unread.append('\n');
         }
 
         //Refresh the list view
