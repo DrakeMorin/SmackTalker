@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
 
         //App is now in the foreground, not the back.
         inBack = false;
+
+        //Clear any unread message notifications
+        deleteNotifications();
         super.onResume();
     }
 
@@ -172,6 +175,14 @@ public class MainActivity extends AppCompatActivity {
         //This method is to be called when a bluetooth message is received
         //It adds the message to the database and refreshes the listView
         dbHandler.addMessage(md);
+
+        if(inBack){
+            //The app is in the background, the message is unread
+            unread.append(md.getMessage());
+            unread.append("/n");
+        }
+
+        //Refresh the list view
         populateListView();
     }
 
@@ -200,10 +211,10 @@ public class MainActivity extends AppCompatActivity {
         //Send message as if it was received from someone else.
         onMessageReceived(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
         newMessageText.setText("");
-        createNotification(newMessageText.getText().toString(), 0);
+        createNotification();
     }
 
-    public void createNotification(String notifyText, int notifyID){
+    public void createNotification(){
         //Toast.makeText(MainActivity.this, "Toast Message", Toast.LENGTH_LONG).show();
 
         /*
@@ -219,8 +230,8 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setSmallIcon(R.drawable.img);
-        mBuilder.setContentTitle("Notification Alert, Click Me!");
-        mBuilder.setContentText(notifyText);
+        mBuilder.setContentTitle("SmackTalker: Unread Messages");
+        mBuilder.setContentText(unread.toString());
         //Notification will disappear when clicked on.
         mBuilder.setAutoCancel(true);
 
@@ -243,7 +254,13 @@ public class MainActivity extends AppCompatActivity {
 
         // notificationID allows you to update the notification later on.
         //mBuilder.build() returns a Notification containing above specifications.
-        mNotifyMgr.notify(notifyID, mBuilder.build());
+        mNotifyMgr.notify(0, mBuilder.build());
+    }
+
+    private void deleteNotifications(){
+        //Clear all notifications. This will run when the .onResume() is called.
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotifyMgr.cancelAll();
     }
 
     private void setUserID(){
