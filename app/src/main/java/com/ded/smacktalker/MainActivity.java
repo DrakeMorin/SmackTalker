@@ -29,8 +29,6 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     protected final static String DEBUGTAG = "DED";
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
@@ -46,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     //Preferences which carry across run time sessions
     SharedPreferences prefs;
-
     //Will contain all messages currently unread
     StringBuilder unread;
     //Will store whether the app is in the fore or background
@@ -60,6 +57,13 @@ public class MainActivity extends AppCompatActivity {
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(this, null, null, 1);
 
+        //Variable instantiation
+        newMessageText = (EditText) findViewById(R.id.newMessageText);
+        prefs = getPreferences(MODE_PRIVATE);
+        rnd = new SecureRandom();
+        unread = new StringBuilder();
+
+
         //Null is the default value. If no userID is saved, the default value assigned will ne null.
         userID = prefs.getString(USERIDKEY, null);
 
@@ -67,12 +71,6 @@ public class MainActivity extends AppCompatActivity {
             //UserID has not been set
             setUserID();
         }
-
-        //Variable instantiation
-        newMessageText = (EditText) findViewById(R.id.newMessageText);
-        prefs = getPreferences(MODE_PRIVATE);
-        rnd = new SecureRandom();
-        unread = new StringBuilder();
 
         /*ListView listView = (ListView) findViewById(R.id.listView);
         //Add item onClickListener
