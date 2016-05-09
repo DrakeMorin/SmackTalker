@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String USERIDKEY = "userID";
 
     EditText newMessageText;
+    ListView listView;
     myDBHandler dbHandler;
 
     //Used for randomly generated userIDs
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             setUserID();
         }
 
-        final ListView listView = (ListView) findViewById(R.id.listView);
+        listView = (ListView) findViewById(R.id.listView);
         //Add item onClickListener
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
