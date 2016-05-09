@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -71,21 +73,26 @@ public class MainActivity extends AppCompatActivity {
             setUserID();
         }
 
-        /*ListView listView = (ListView) findViewById(R.id.listView);
+        final ListView listView = (ListView) findViewById(R.id.listView);
         //Add item onClickListener
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
                         //Get the string value of the view that was touched at position # (which is stored in position
-                        //This WILL enable copy and pasting later.
-                        String message = String.valueOf(parent.getItemAtPosition(position).toString());
-                        Log.d("DED", message);
+                        //This WILL enable copy to clipboard
+
+                        //Get cursor from listView
+                        SQLiteCursor c  = (SQLiteCursor) parent.getItemAtPosition(position);
+                        //Move cursor position to the corresponding item touched
+                        c.moveToPosition(position);
+                        //Get the Message from the MESSAGETEXT column in the database
+                        String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGETEXT));
+
+                        Toast.makeText(MainActivity.this, "You selected: " + message, Toast.LENGTH_SHORT).show();
                     }
                 }
-        );*/
+        );
 
         //Populate listView with previous messages
         populateListView();
