@@ -140,13 +140,16 @@ public class MainActivity extends AppCompatActivity {
         if(btAdapter.isEnabled()){
             Intent i = new Intent(MainActivity.this,  DeviceListActivity.class);
             startActivity(i);
+            Log.d(DEBUGTAG, "Opening Device List");
         }
 
         else{
+
             String actionStateChanged = BluetoothAdapter.ACTION_STATE_CHANGED;
             String actionRequestEnable = BluetoothAdapter.ACTION_REQUEST_ENABLE;
             IntentFilter Filter = new IntentFilter(actionStateChanged);
             startActivityForResult(new Intent(actionRequestEnable), 0);
+            Log.d(DEBUGTAG, "turned on bluetoth");
 
             Intent i = new Intent(MainActivity.this,  DeviceListActivity.class);
             startActivity(i);
@@ -154,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             String name = btAdapter.getName();
             String statusText = name + ":" + address;
 
-            Toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, Toast.LENGTH_LONG).show();
+
         }
 
 
