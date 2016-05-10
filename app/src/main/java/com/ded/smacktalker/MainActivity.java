@@ -3,6 +3,8 @@ package com.ded.smacktalker;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.DialogInterface;
@@ -90,9 +92,20 @@ public class MainActivity extends AppCompatActivity {
                         //Get the Message from the MESSAGETEXT column in the database
                         String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGETEXT));
 
-                        Toast.makeText(MainActivity.this, "You selected: " + message, Toast.LENGTH_SHORT).show();
+                        //Save message to clipboard
+
+                        //Get handle for clipboard service
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        //Create text clip
+                        ClipData clip = ClipData.newPlainText(DEBUGTAG, message);
+                        //Add text clip to clipboard
+                        clipboard.setPrimaryClip(clip);
+
+                        Toast.makeText(MainActivity.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
                     }
                 }
+
+
         );
 
         //Populate listView with previous messages
@@ -151,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, Toast.LENGTH_LONG).show();
         }
-
     }
 
     //Message is ready to be sent.
