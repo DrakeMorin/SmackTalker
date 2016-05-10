@@ -29,7 +29,6 @@ public class myDBHandler extends SQLiteOpenHelper{
     public myDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
         //For housekeeping, passes information to the super class which does background stuff.
-        Log.d(MainActivity.DEBUGTAG, "DB Handler constructor run");
     }
 
     @Override
@@ -50,7 +49,6 @@ public class myDBHandler extends SQLiteOpenHelper{
 
         //Passes the above command to SQL to execute
         db.execSQL(query);
-        Log.d(MainActivity.DEBUGTAG, "DB Created");
     }
 
     @Override
@@ -73,11 +71,9 @@ public class myDBHandler extends SQLiteOpenHelper{
         values.put(COLUMN_SENDERID, message.getSenderID());
         values.put(COLUMN_TIME, message.getTime());
         values.put(COLUMN_IMGID, message.getImgID());
-        Log.d(MainActivity.DEBUGTAG, "ContentValues configured");
 
         //Creates a database we can write to!
         SQLiteDatabase db = getWritableDatabase();
-        Log.d(MainActivity.DEBUGTAG, "Writeable DB created");
 
         //Inserts a new row in
         db.insert(TABLE_MESSAGES, null, values);
