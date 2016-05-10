@@ -2,4 +2,11 @@
     <string name="app_name">ListView Test</string>
     <string name="sendButtonText">Send</string>
     <string name="messageEditTextHint">Enter message</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Devices</string>
+    <string name="button_scan">Scan</string>
+    <string name="none_paired">None Paired</string>
+    <string name="scanning">Scanning</string>
+    <string name="select_device">Select Device</string>
+    <string name="none_found">No Devices Found</string>
 </resources>

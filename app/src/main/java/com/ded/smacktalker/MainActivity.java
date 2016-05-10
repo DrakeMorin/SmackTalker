@@ -93,13 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         //BLUETOOTH IS ALREADY ON, TOAST THE USER
         if(btAdapter.isEnabled()){
-            String address = btAdapter.getAddress();
-            String name = btAdapter.getName();
-            String statusText = name + ":" + address;
-
-            Toast toast = new Toast(getApplicationContext());
-            toast.setGravity(Gravity.BOTTOM | Gravity.LEFT, 0, 0);
-            toast.makeText(MainActivity.this, "Bluetooth Already On: " + statusText, toast.LENGTH_LONG).show();
+            Intent i = new Intent(MainActivity.this,  DeviceListActivity.class);
+            startActivity(i);
         }
 
         else{
@@ -108,7 +103,12 @@ public class MainActivity extends AppCompatActivity {
             IntentFilter Filter = new IntentFilter(actionStateChanged);
             startActivityForResult(new Intent(actionRequestEnable), 0);
 
+            Intent i = new Intent(MainActivity.this,  DeviceListActivity.class);
+            startActivity(i);
+
         }
+
+
 
     }
 
