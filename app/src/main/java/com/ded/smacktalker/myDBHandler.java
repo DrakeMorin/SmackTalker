@@ -33,7 +33,7 @@ public class myDBHandler extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //What happens when the table is created for the first time.
+        //What happens when the database is created for the first time.
 
         //This string is an SQL command which will create the table.
         //For the columns in the table, you must add them so the string
@@ -62,7 +62,7 @@ public class myDBHandler extends SQLiteOpenHelper{
     }
 
     //Add a new row to the database
-    public void addMessage(MessageData message){
+    public void addMessage(String table, MessageData message){
         //Allows you to set values for several columns for one row, in one go.
         ContentValues values = new ContentValues();
 
@@ -76,7 +76,7 @@ public class myDBHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
 
         //Inserts a new row in
-        db.insert(TABLE_MESSAGES, null, values);
+        db.insert(table, null, values);
         Log.d(MainActivity.DEBUGTAG, "Data passed into DB");
 
         //Closes database, saves android some memory.
@@ -84,12 +84,12 @@ public class myDBHandler extends SQLiteOpenHelper{
     }
 
     //Delete a row from the database
-    public void deleteMessage(String messageID){
+    public void deleteMessage(String table, String messageID){
         //Creates a database we can delete from!
         SQLiteDatabase db = getWritableDatabase();
 
         //Deletes from the table, where the MESSAGETEXT column matches the parameter passed in.
-        db.execSQL("DELETE FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_MESSAGETEXT +
+        db.execSQL("DELETE FROM " + table + " WHERE " + COLUMN_MESSAGETEXT +
                 "=\"" + messageID + "\";");
 
         //Close database
@@ -97,14 +97,14 @@ public class myDBHandler extends SQLiteOpenHelper{
     }
 
     //Print out the database as a string
-    public String databaseToString(){
+    public String databaseToString(String table){
         String dbString = "";
 
         //Creates a database we can write to!
         SQLiteDatabase db = getWritableDatabase();
 
         //"Select all from the Table where all conditions are met (1 means this is always true)
-        String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE 1";
+        String query = "SELECT * FROM " + table + " WHERE 1";
 
         //Cursor will point to a location in your results.
         Cursor c = db.rawQuery(query, null);
@@ -126,9 +126,9 @@ public class myDBHandler extends SQLiteOpenHelper{
     }
 
     //This function when called returns all the data in the database in a cursor.
-    public Cursor getAllRows(){
+    public Cursor getAllRows(String table){
         SQLiteDatabase db = getWritableDatabase();
-        Cursor c = db.query(true, TABLE_MESSAGES, allColumns , null, null, null, null, null, null );
+        Cursor c = db.query(true, table, allColumns , null, null, null, null, null, null );
         if(c != null){
             c.moveToFirst();
         }
@@ -136,8 +136,8 @@ public class myDBHandler extends SQLiteOpenHelper{
     }
 
     //Get Row Count
-    public int getCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_MESSAGES;
+    public int getCount(String table) {
+        String countQuery = "SELECT  * FROM " + table;
         int count = 0;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);

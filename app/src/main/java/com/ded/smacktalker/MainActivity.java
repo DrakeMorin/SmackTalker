@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     myDBHandler dbHandler;
 
+    //This will store the name of the table for the current conversation.
+    String currentTable = myDBHandler.TABLE_MESSAGES;
+
     //Used for randomly generated userIDs
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd;
@@ -104,8 +107,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
                     }
                 }
-
-
         );
 
         //Populate listView with previous messages
@@ -166,6 +167,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void onConversationStart(){
+        //This method is to be called when a conversation is started with someone.
+        //This will load any past messages if a table exists.
+
+        //Set the name that will reference corresponding database table.
+        currentTable = userID /*+ senderID*/;
+
+        //Test to see if table already exists, probably with try/catch
+
+        //If it doesn't create the table.
+    }
+
     //Message is ready to be sent.
     public void sendButtonClicked(View view) {
         if (!newMessageText.getText().toString().equals("")) {
@@ -178,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             String timeStamp = df.format(c.getTime());
 
             //Add to database a new MessageData object with fields.
-            dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), timeStamp, userID));
+            dbHandler.addMessage(currentTable, new MessageData(newMessageText.getText().toString(), timeStamp, userID));
 
             //Clear text field
             newMessageText.setText("");
@@ -194,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     public void onMessageReceived(MessageData md){
         //This method is to be called when a bluetooth message is received
         //It adds the message to the database and refreshes the listView
-        dbHandler.addMessage(md);
+        dbHandler.addMessage(currentTable, md);
 
         if(inBack){
             //The app is in the background, the message is unread
@@ -207,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateListView() {
-        Cursor myCursor = dbHandler.getAllRows();
+        Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
         String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
 
@@ -273,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // notificationID allows you to update the notification later on.
+        //notificationID allows you to update the notification later on.
         //mBuilder.build() returns a Notification containing above specifications.
         mNotifyMgr.notify(0, mBuilder.build());
     }
