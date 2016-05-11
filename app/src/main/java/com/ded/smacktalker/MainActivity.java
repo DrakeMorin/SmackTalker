@@ -121,38 +121,42 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    //CHECKS FOR IF ANY OF THE ITEMS IN THE ACTION BAR ARE PRESSED
+    //Check for if any of the action bar items are clicked
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_bluetooth) {
             Log.d(DEBUGTAG, "Bluetooth button pressed");
+            //Start the btButtonClick();
             btButtonClick();
         }
         return true;
     }
 
-    //IF BLUETOOTH BUTTON IS CLICKED, TURN ON/OFF BLUETOOTH AND ALERT THE USER
+    //What happens if btButton is clicked;
     public void btButtonClick() {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        //BLUETOOTH IS ALREADY ON, TOAST THE USER
+        //The bluetooth is already on, so show DeviceList
         if(btAdapter.isEnabled()){
             Intent i = new Intent(MainActivity.this,  DeviceListActivity.class);
             startActivity(i);
             Log.d(DEBUGTAG, "Opening Device List");
         }
 
+        //Bluetooth is not on, turn it on
         else{
 
+            //Sends request to the device to turn on bluetooth radio
             String actionStateChanged = BluetoothAdapter.ACTION_STATE_CHANGED;
             String actionRequestEnable = BluetoothAdapter.ACTION_REQUEST_ENABLE;
             IntentFilter Filter = new IntentFilter(actionStateChanged);
             startActivityForResult(new Intent(actionRequestEnable), 0);
-            Log.d(DEBUGTAG, "turned on bluetoth");
+            Log.d(DEBUGTAG, "turned on bluetooth");
 
             Intent i = new Intent(MainActivity.this,  DeviceListActivity.class);
             startActivity(i);
+            //Saves information from bluetooth connection, don't know if this will actually be used yet
             String address = btAdapter.getAddress();
             String name = btAdapter.getName();
             String statusText = name + ":" + address;
