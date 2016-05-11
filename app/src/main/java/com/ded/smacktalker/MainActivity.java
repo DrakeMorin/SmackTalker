@@ -177,6 +177,25 @@ public class MainActivity extends AppCompatActivity {
         //Test to see if table already exists, probably with try/catch
         //Consider using "CREATE TABLE IF NOT EXISTS mytable (col1 type, col2 type);" for this purpose
         //If it doesn't create the table.
+
+        //Now check to see if both tables are the same and up to date.
+        //This should resolve any issues if BT connection is lost before a message is received.
+        //REQUIREMENT: BOTH PARTIES MUST SEND THE SIZE OF THEIR TABLE USING .getCount()
+
+        //Store our table size
+        int mRowCount = dbHandler.getCount(currentTable);
+        //Get and store their table size
+        int yRowCount = 0; //Call method to get the partners row count. Essentially, they pass each other their mRowCount
+
+        if(mRowCount > yRowCount){
+            //Our table has messages they haven't received
+            //Send our table information
+        }else if(mRowCount < yRowCount){
+            //Their table has messages we haven't received
+            //Receive their table information
+        }else{
+            //Our tables are perfectly in sync.
+        }
     }
 
     //Message is ready to be sent.
