@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         currentTable = userID /*+ senderID*/;
 
         //Test to see if table already exists, probably with try/catch
-
+        //Consider using "CREATE TABLE IF NOT EXISTS mytable (col1 type, col2 type);" for this purpose
         //If it doesn't create the table.
     }
 

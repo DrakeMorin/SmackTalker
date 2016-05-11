@@ -37,7 +37,7 @@ public class myDBHandler extends SQLiteOpenHelper{
 
         //This string is an SQL command which will create the table.
         //For the columns in the table, you must add them so the string
-        //Looks like tableName(column1 <> column2 <> column3 <>);
+        //Looks like tableName(column1 <>, column2 <>, column3 <>);
         //Where the <> is the details about that column
         String query = "CREATE TABLE " + TABLE_MESSAGES + "(" +
                 COLUMN_ID + " INTERGER PRIMARY KEY, " + //Unique int identifier, automatically incrementing
@@ -59,6 +59,28 @@ public class myDBHandler extends SQLiteOpenHelper{
         //Call onCreate to make a new table.
         onCreate(db);
         Log.d(MainActivity.DEBUGTAG, "Table Dropped");
+    }
+
+    public void createTable(String table){
+        //Creates a database we can write to!
+        SQLiteDatabase db = getWritableDatabase();
+
+        //Create a table to store a specific conversation
+        //This string is an SQL command which will create the table.
+        //For the columns in the table, you must add them so the string
+        //Looks like tableName(column1 <>, column2 <>, column3 <>);
+        //Where the <> is the details about that column
+
+        String query = "CREATE TABLE " + table + "(" +
+                COLUMN_ID + " INTERGER PRIMARY KEY, " + //Unique int identifier, automatically incrementing
+                COLUMN_MESSAGETEXT + " TEXT, " +
+                COLUMN_SENDERID + " TEXT, " +
+                COLUMN_TIME + " INTEGER, " +
+                COLUMN_IMGID + " INTEGER " +
+                ");";
+
+        //Passes the above command to SQL to execute
+        db.execSQL(query);
     }
 
     //Add a new row to the database
