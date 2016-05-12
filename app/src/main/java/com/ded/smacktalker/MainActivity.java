@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         //Now check to see if both tables are the same and up to date.
         //This should resolve any issues if BT connection is lost before a message is received.
         //REQUIREMENT: BOTH PARTIES MUST SEND THE SIZE OF THEIR TABLE USING .getCount()
-
+        /* RESTORE ONCE BLUETOOTH IS WORKING
         //Store our table size
         int mRowCount = dbHandler.getCount(currentTable);
         //Get and store their table size
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             //Receive their table information
         }else{
             //Our tables are perfectly in sync.
-        }
+        }*/
 
         //Update listView
         populateListView();
