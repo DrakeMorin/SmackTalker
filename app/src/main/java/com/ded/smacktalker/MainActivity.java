@@ -172,11 +172,10 @@ public class MainActivity extends AppCompatActivity {
         //This will load any past messages if a table exists.
 
         //Set the name that will reference corresponding database table.
-        currentTable = userID /*+ senderID*/;
+        //currentTable = userID /*+ senderID*/;
 
-        //Test to see if table already exists, probably with try/catch
-        //Consider using "CREATE TABLE IF NOT EXISTS mytable (col1 type, col2 type);" for this purpose
-        //If it doesn't create the table.
+        //This method checks if a table already exists, otherwise it creates one.
+        dbHandler.createTable(currentTable);
 
         //Now check to see if both tables are the same and up to date.
         //This should resolve any issues if BT connection is lost before a message is received.
@@ -196,13 +195,16 @@ public class MainActivity extends AppCompatActivity {
         }else{
             //Our tables are perfectly in sync.
         }
+
+        //Update listView
+        populateListView();
     }
 
     //Message is ready to be sent.
     public void sendButtonClicked(View view) {
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
-            //Intialize a calendar to current date
+            //Initialize a calendar to current date
             Calendar c = Calendar.getInstance();
             //Create format for the date
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
@@ -260,11 +262,10 @@ public class MainActivity extends AppCompatActivity {
 
     //For testing purposes.
     public void testButtonClicked(View view){
-        //Send message as if it was received from someone else.
-        inBack = true;
-        onMessageReceived(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
+        //Change table name for testing.
+        currentTable = newMessageText.getText().toString();
+        onConversationStart();
         newMessageText.setText("");
-        createNotification();
     }
 
     public void createNotification(){

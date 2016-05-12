@@ -71,7 +71,7 @@ public class myDBHandler extends SQLiteOpenHelper{
         //Looks like tableName(column1 <>, column2 <>, column3 <>);
         //Where the <> is the details about that column
 
-        String query = "CREATE TABLE " + table + "(" +
+        String query = "CREATE TABLE IF NOT EXISTS " + table + "(" +
                 COLUMN_ID + " INTERGER PRIMARY KEY, " + //Unique int identifier, automatically incrementing
                 COLUMN_MESSAGETEXT + " TEXT, " +
                 COLUMN_SENDERID + " TEXT, " +
