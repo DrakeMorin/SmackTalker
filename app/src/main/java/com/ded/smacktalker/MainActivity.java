@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private Button Bluetooth;
     protected static String userID;
     private static final String USERIDKEY = "userID";
+    //This is a constant ID to track the device regardless of the set userID
+    private static String deviceID;
+    private static final String DEVICEKEY = "deviceID";
 
     EditText newMessageText;
     ListView listView;
@@ -67,9 +70,30 @@ public class MainActivity extends AppCompatActivity {
         //Variable instantiation
         newMessageText = (EditText) findViewById(R.id.newMessageText);
         prefs = getPreferences(MODE_PRIVATE);
-        rnd = new SecureRandom();
         unread = new StringBuilder();
+        rnd = new SecureRandom();
 
+        //Get deviceID from preferences
+        deviceID = prefs.getString(DEVICEKEY, null);
+
+        if(deviceID == null){
+            //One in 57 billion chance of two users having the same deviceID with this method
+            //Create randomized deviceID
+            int len = 6;
+            StringBuilder sb = new StringBuilder( len );
+            //Random # created which points to a string of all possible chars.
+            //Appends that char onto the userID and repeats until desired length.
+            for( int i = 0; i < len; i++ ) {
+                sb.append(AB.charAt(rnd.nextInt(AB.length())));
+            }
+            deviceID = sb.toString();
+
+            //Save the userID to preferences.
+            SharedPreferences.Editor editor = prefs.edit();
+            //Stores the userID under the key specified in the final USERIDKEY
+            editor.putString(DEVICEKEY, deviceID);
+            editor.apply();
+        }
 
         //Null is the default value. If no userID is saved, the default value assigned will ne null.
         userID = prefs.getString(USERIDKEY, null);
@@ -352,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
 
                 int len = 8;
                 StringBuilder sb = new StringBuilder( len );
+                rnd = new SecureRandom();
                 //Random # created which points to a string of all possible chars.
                 //Appends that char onto the userID and repeats until desired length.
                 for( int i = 0; i < len; i++ ) {
