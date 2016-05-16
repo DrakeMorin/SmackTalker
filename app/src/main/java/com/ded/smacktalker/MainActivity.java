@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private static String deviceID;
     private static final String DEVICEKEY = "deviceID";
 
+    //This String will store the deviceID of the other person in the conversation
+    private static String oDeviceID;
+
     EditText newMessageText;
     ListView listView;
     myDBHandler dbHandler;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Preferences which carry across run time sessions
     SharedPreferences prefs;
+    SharedPreferences.Editor editor;
     //Will contain all messages currently unread
     StringBuilder unread;
     //Will store whether the app is in the fore or background
@@ -70,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         //Variable instantiation
         newMessageText = (EditText) findViewById(R.id.newMessageText);
         prefs = getPreferences(MODE_PRIVATE);
+        editor = prefs.edit();
         unread = new StringBuilder();
         rnd = new SecureRandom();
 
@@ -88,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
             }
             deviceID = sb.toString();
 
-            //Save the userID to preferences.
-            SharedPreferences.Editor editor = prefs.edit();
             //Stores the userID under the key specified in the final USERIDKEY
             editor.putString(DEVICEKEY, deviceID);
             editor.apply();
@@ -120,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
                         String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGETEXT));
 
                         //Save message to clipboard
-
                         //Get handle for clipboard service
                         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                         //Create text clip
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         //When the app is resumed from background, assume all messages are read.
-        //Clear the unread bit.
+        //Clear the unread messages stored in the stringbuilder.
         unread.delete(0, unread.length());
 
         //App is now in the foreground, not the back.
@@ -201,6 +203,10 @@ public class MainActivity extends AppCompatActivity {
         //This method checks if a table already exists, otherwise it creates one.
         dbHandler.createTable(currentTable);
 
+        //Send our deviceID
+        //Receive their deviceID
+        oDeviceID = null;
+
         //Now check to see if both tables are the same and up to date.
         //This should resolve any issues if BT connection is lost before a message is received.
         //REQUIREMENT: BOTH PARTIES MUST SEND THE SIZE OF THEIR TABLE USING .getCount()
@@ -254,10 +260,16 @@ public class MainActivity extends AppCompatActivity {
         //It adds the message to the database and refreshes the listView
         dbHandler.addMessage(currentTable, md);
 
+        if(unread.length() != 0){
+            //If this is the first unread message, put the senderID at the top of the notification text
+            unread.append(md.getSenderID());
+            unread.append(": \n");
+        }
+
         if(inBack){
             //The app is in the background, the message is unread
             unread.append(md.getMessage());
-            unread.append('\n');
+            unread.append("\n");
         }
 
         //Refresh the list view
@@ -361,8 +373,6 @@ public class MainActivity extends AppCompatActivity {
                 userID = userIDText.getText().toString();
                 Toast.makeText(MainActivity.this, "UserID set", Toast.LENGTH_SHORT).show();
 
-                //Save the userID to preferences.
-                SharedPreferences.Editor editor = prefs.edit();
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
                 editor.apply();
@@ -385,8 +395,6 @@ public class MainActivity extends AppCompatActivity {
                 userID = sb.toString();
                 Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
 
-                //Save the userID to preferences.
-                SharedPreferences.Editor editor = prefs.edit();
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
                 editor.apply();
