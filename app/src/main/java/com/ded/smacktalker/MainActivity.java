@@ -174,16 +174,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.action_bluetooth) {
-            Log.d(DEBUGTAG, "Bluetooth button pressed");
-            btButtonClick();
-            return true;
-        }else if(item.getItemId() == R.id.action_settings){
-            //User clicked on the settings
-            setUserID();
-            return true;
-        }else{
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()){
+            case R.id.action_bluetooth:
+                Log.d(DEBUGTAG, "Bluetooth button pressed");
+                btButtonClick();
+                return true;
+
+            case R.id.action_settings:
+                //User clicked on the settings
+                setUserID();
+                return true;
+
+            default:
+                //User's action unrecognized, use super class to handle it
+                return super.onOptionsItemSelected(item);
         }
 
     }
