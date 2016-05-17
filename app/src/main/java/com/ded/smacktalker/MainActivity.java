@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
         //Get deviceID from preferences
         deviceID = prefs.getString(DEVICEKEY, null);
 
+
+
         if(deviceID == null){
             //One in 57 billion chance of two users having the same deviceID with this method
             //Create randomized deviceID
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         }
 
-        //Null is the default value. If no userID is saved, the default value assigned will ne null.
+        //Null is the default value. If no userID is saved, the default value assigned will be null.
         userID = prefs.getString(USERIDKEY, null);
 
         if(userID == null){
@@ -175,8 +177,15 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_bluetooth) {
             Log.d(DEBUGTAG, "Bluetooth button pressed");
             btButtonClick();
+            return true;
+        }else if(item.getItemId() == R.id.action_settings){
+            //User clicked on the settings
+            setUserID();
+            return true;
+        }else{
+            return super.onOptionsItemSelected(item);
         }
-        return true;
+
     }
 
     //IF BLUETOOTH BUTTON IS CLICKED, TURN ON/OFF BLUETOOTH AND ALERT THE USER
@@ -251,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
             //Refresh listView
             populateListView();
         } else {
+            Toast.makeText(MainActivity.this, "No message to send", Toast.LENGTH_SHORT).show();
             Log.d(DEBUGTAG, "Message Field Empty");
         }
     }
@@ -260,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
         //It adds the message to the database and refreshes the listView
         dbHandler.addMessage(currentTable, md);
 
-        if(unread.length() != 0){
+        if(inBack && unread.length() != 0){
             //If this is the first unread message, put the senderID at the top of the notification text
             unread.append(md.getSenderID());
             unread.append(": \n");
@@ -270,6 +280,8 @@ public class MainActivity extends AppCompatActivity {
             //The app is in the background, the message is unread
             unread.append(md.getMessage());
             unread.append("\n");
+            //Create notification
+            createNotification();
         }
 
         //Refresh the list view
