@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void onConversationStart(){
+    protected void onConversationStart(){
         //This method is to be called when a conversation is started with someone.
         //This will load any past messages if a table exists.
 
@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onMessageReceived(MessageData md){
+    protected void onMessageReceived(MessageData md){
         //This method is to be called when a bluetooth message is received
         //It adds the message to the database and refreshes the listView
         dbHandler.addMessage(currentTable, md);
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         newMessageText.setText("");
     }
 
-    public void createNotification(){
+    private void createNotification(){
         //Toast.makeText(MainActivity.this, "Toast Message", Toast.LENGTH_LONG).show();
 
         /*
