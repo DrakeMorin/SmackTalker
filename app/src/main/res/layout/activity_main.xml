@@ -30,7 +30,7 @@
         android:layout_toStartOf="@+id/sendButton"
         android:layout_alignBottom="@+id/testButton"
         android:layout_toRightOf="@+id/testButton"
-        android:layout_toEndOf="@+id/testButton" />
+        android:layout_toEndOf="@+id/testButton"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"

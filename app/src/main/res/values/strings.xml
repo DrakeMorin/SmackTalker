@@ -2,4 +2,6 @@
     <string name="app_name">Smack Talker</string>
     <string name="sendButtonText">Send</string>
     <string name="messageEditTextHint">Enter message</string>
+    <string name="action_resetUserName">Reset username</string>
+    <string name="action_bluetooth">Bluetooth</string>
 </resources>
