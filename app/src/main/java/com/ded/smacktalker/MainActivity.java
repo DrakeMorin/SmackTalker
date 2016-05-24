@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
         //This will store and build the notification and its data
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         //Set notification info
-        mBuilder.setSmallIcon(R.drawable.img);
+        mBuilder.setSmallIcon(R.drawable.logo_round);
         mBuilder.setContentTitle("SmackTalker: Unread Messages");
         mBuilder.setContentText(unread.toString());
         //Notification will disappear when clicked on.
