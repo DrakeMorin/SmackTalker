@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     //This String will store the deviceID of the other person in the conversation
     private static String oDeviceID;
 
+    //This bool will store if the panic mode has been activated
+    private boolean panicMode = false;
+
     EditText newMessageText;
     ListView listView;
     myDBHandler dbHandler;
@@ -183,6 +186,18 @@ public class MainActivity extends AppCompatActivity {
                 setUserID();
                 return true;
 
+            /*case R.id.action_panic:
+                if(!panicMode) {
+                    //Turn on panic mode
+                    panicMode = true;
+                    populateListView();
+                }else{
+                    //Turn off panic mode
+                    panicMode = false;
+                    populateListView();
+                }
+                return true;*/
+
             default:
                 //User's action unrecognized, use super class to handle it
                 return super.onOptionsItemSelected(item);
@@ -291,12 +306,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateListView() {
+        //Will only populate the listView if panic mode is off.
+
+        if(panicMode){
+            //Panic mode is on, do not show messages
+            //This will get all rows from a table that doesn't exist; no messages will be shown
+            Cursor myCursor = dbHandler.getAllRows("zero");
+        }else{
+            //Panic mode is off, show messages
+            //Get all rows like normal
+            Cursor myCursor = dbHandler.getAllRows(currentTable);
+        }
         Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
-        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
+        String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
 
         //Where the data is going to go.
-        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
+        int[] toViewIDs = new int[]{R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
 
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
@@ -308,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Sets listView adapter to the cursorAdapter
         myListView.setAdapter(myCursorAdapter);
+
     }
 
     //For testing purposes.
