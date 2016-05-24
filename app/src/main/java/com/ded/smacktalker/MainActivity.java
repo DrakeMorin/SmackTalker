@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         //Get deviceID from preferences
         deviceID = prefs.getString(DEVICEKEY, null);
 
-
-
         if(deviceID == null){
             //One in 57 billion chance of two users having the same deviceID with this method
             //Create randomized deviceID
@@ -321,20 +319,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createNotification(){
-        //Toast.makeText(MainActivity.this, "Toast Message", Toast.LENGTH_LONG).show();
-
-        /*
-        * Once Bluetooth is working, revisit this method. The goal is that as more messages are
-        * received but not read, this method will update the notification to show all unread messages
-        * separated by hard returns. This will require tracking what messages have been received
-        * since the app was last opened, and adding those messages to String notifyText.
-        *
-        * Finally, the notification ID should be unique to each conversation. As such, I will
-        * base it off the integer value of the sender's userID. This should ensure that if you receive
-        * multiple messages from different conversations, they all get their own notification.
-         */
-
+        //This will store and build the notification and its data
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        //Set notification info
         mBuilder.setSmallIcon(R.drawable.img);
         mBuilder.setContentTitle("SmackTalker: Unread Messages");
         mBuilder.setContentText(unread.toString());
