@@ -11,10 +11,13 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,9 +47,14 @@ public class MainActivity extends AppCompatActivity {
     //This String will store the deviceID of the other person in the conversation
     private static String oDeviceID;
 
+    //This bool will store if the panic mode has been activated
+    private boolean panicMode = false;
+
     EditText newMessageText;
-    ListView listView;
+    ListView myListView;
+    Menu menu;
     myDBHandler dbHandler;
+
 
     //This will store the name of the table for the current conversation.
     String currentTable = myDBHandler.TABLE_MESSAGES;
@@ -106,16 +114,16 @@ public class MainActivity extends AppCompatActivity {
             setUserID();
         }
 
-        listView = (ListView) findViewById(R.id.listView);
+        myListView = (ListView) findViewById(R.id.listView);
         //Add item onClickListener
-        listView.setOnItemClickListener(
+        myListView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         //Get the string value of the view that was touched at position # (which is stored in position
                         //This WILL enable copy to clipboard
 
-                        //Get cursor from listView
+                        //Get cursor from myListView
                         SQLiteCursor c  = (SQLiteCursor) parent.getItemAtPosition(position);
                         //Move cursor position to the corresponding item touched
                         c.moveToPosition(position);
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        //Populate listView with previous messages
+        //Populate myListView with previous messages
         populateListView();
     }
 
@@ -164,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
         Log.d(DEBUGTAG, "Options Menu Inflated");
         return true;
     }
@@ -183,11 +192,42 @@ public class MainActivity extends AppCompatActivity {
                 setUserID();
                 return true;
 
+            case R.id.action_panic:
+                if(!panicMode) {
+                    //Turn on panic mode
+                    panicMode = true;
+                    populateListView();
+
+                    //Change icon to on
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //If running Android Lollipop or higher, use getDrawable(int, theme)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white, getTheme()));
+                    }else{
+                        //If running lower than Android Lollipop, use getDrawable(int)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white));
+                    }
+
+
+                }else{
+                    //Turn off panic mode
+                    panicMode = false;
+                    populateListView();
+
+                    //Change icon to off
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //If running Android Lollipop or higher, use getDrawable(int, theme)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black, getTheme()));
+                    }else{
+                        //If running lower than Android Lollipop, use getDrawable(int)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black));
+                    }
+                }
+                return true;
+
             default:
                 //User's action unrecognized, use super class to handle it
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     //IF BLUETOOTH BUTTON IS CLICKED, TURN ON/OFF BLUETOOTH AND ALERT THE USER
@@ -237,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
             //Our tables are perfectly in sync.
         }*/
 
-        //Update listView
+        //Update myListView
         populateListView();
     }
 
@@ -259,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
             newMessageText.setText("");
             Log.d(DEBUGTAG, "EditText cleared");
 
-            //Refresh listView
+            //Refresh myListView
             populateListView();
         } else {
             Toast.makeText(MainActivity.this, "No message to send", Toast.LENGTH_SHORT).show();
@@ -269,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onMessageReceived(MessageData md){
         //This method is to be called when a bluetooth message is received
-        //It adds the message to the database and refreshes the listView
+        //It adds the message to the database and refreshes the myListView
         dbHandler.addMessage(currentTable, md);
 
         if(inBack && unread.length() != 0){
@@ -291,23 +331,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateListView() {
+        //Will only populate the myListView if panic mode is off.
+
         Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
-        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
+        String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
 
         //Where the data is going to go.
-        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
+        int[] toViewIDs = new int[]{R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
 
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
         //Get the context, the defined layout being used, the cursor, the columns being read, the location of info being stored, 0
         myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
-        //Set listView
-        ListView myListView = (ListView) findViewById(R.id.listView);
+        //Set myListView
+        myListView = (ListView) findViewById(R.id.listView);
 
-        //Sets listView adapter to the cursorAdapter
-        myListView.setAdapter(myCursorAdapter);
+
+
+        if(panicMode){
+            //Do not show messages; set adapter to null
+            myListView.setAdapter(null);
+        }else {
+            //Messages can be shown; set myListView adapter to the cursorAdapter
+            myListView.setAdapter(myCursorAdapter);
+        }
     }
 
     //For testing purposes.

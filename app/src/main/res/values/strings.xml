@@ -4,4 +4,5 @@
     <string name="messageEditTextHint">Enter message</string>
     <string name="action_resetUserName">Reset username</string>
     <string name="action_bluetooth">Bluetooth</string>
+    <string name="action_panic">Panic Button</string>
 </resources>
