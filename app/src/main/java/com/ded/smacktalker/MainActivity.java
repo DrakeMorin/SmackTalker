@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private static String oDeviceID;
 
     //This bool will store if the panic mode has been activated
-    private boolean panicMode = false;
+    static boolean panicMode = false;
 
     EditText newMessageText;
     ListView myListView;
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     //Will contain all messages currently unread
     StringBuilder unread;
     //Will store whether the app is in the fore or background
-    private boolean inBack = false;
+    static boolean inBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
