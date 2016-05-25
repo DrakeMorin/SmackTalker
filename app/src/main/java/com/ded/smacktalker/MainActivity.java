@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     protected static String userID;
     private static final String USERIDKEY = "userID";
 
-    EditText newMessageText;
+
+    static EditText newMessageText;
     myDBHandler dbHandler;
 
     //Used for randomly generated userIDs
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             //UserID has not been set
             setUserID();
         }
+
 
         /*ListView listView = (ListView) findViewById(R.id.listView);
         //Add item onClickListener
@@ -179,8 +181,9 @@ public class MainActivity extends AppCompatActivity {
             //Format the date and set it to a string
             String timeStamp = df.format(c.getTime());
 
+            String message = newMessageText.getText().toString();
             //Add to database a new MessageData object with fields.
-            dbHandler.addMessage(new MessageData(newMessageText.getText().toString(), timeStamp, userID));
+            dbHandler.addMessage(new MessageData(message, timeStamp, userID));
 
             //Clear text field
             newMessageText.setText("");
@@ -188,6 +191,9 @@ public class MainActivity extends AppCompatActivity {
 
             //Refresh listView
             populateListView();
+
+
+
         } else {
             Log.d(DEBUGTAG, "Message Field Empty");
         }
