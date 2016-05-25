@@ -8,10 +8,14 @@
         android:title="@string/action_bluetooth"
         app:showAsAction="ifRoom" />
 
+    <!--
+        If you add any other icons, or change their order, you must go into
+        MainActivity.onOptionsItemSelected and change the id used for the panic button icon change.
+    -->
     <item
-        android:id="@+id/action_panicOn"
+        android:id="@+id/action_panic"
         android:icon="@drawable/panic_icon_black"
-        android:title="@string/action_panicOn"
+        android:title="@string/action_panic"
         app:showAsAction="ifRoom"
         />
 

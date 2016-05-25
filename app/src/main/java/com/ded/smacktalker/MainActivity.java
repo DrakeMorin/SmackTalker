@@ -11,10 +11,12 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
     EditText newMessageText;
     ListView myListView;
+    Menu menu;
     myDBHandler dbHandler;
+
 
     //This will store the name of the table for the current conversation.
     String currentTable = myDBHandler.TABLE_MESSAGES;
@@ -167,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
         Log.d(DEBUGTAG, "Options Menu Inflated");
         return true;
     }
@@ -186,15 +191,22 @@ public class MainActivity extends AppCompatActivity {
                 setUserID();
                 return true;
 
-            case R.id.action_panicOn:
+            case R.id.action_panic:
                 if(!panicMode) {
                     //Turn on panic mode
                     panicMode = true;
                     populateListView();
+
+                    //Change icon to on
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white));
+
                 }else{
                     //Turn off panic mode
                     panicMode = false;
                     populateListView();
+
+                    //Change icon to off
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black));
                 }
                 return true;
 
@@ -202,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
                 //User's action unrecognized, use super class to handle it
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     //IF BLUETOOTH BUTTON IS CLICKED, TURN ON/OFF BLUETOOTH AND ALERT THE USER
