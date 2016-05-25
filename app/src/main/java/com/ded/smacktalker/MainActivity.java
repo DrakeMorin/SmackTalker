@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -198,7 +199,14 @@ public class MainActivity extends AppCompatActivity {
                     populateListView();
 
                     //Change icon to on
-                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //If running Android Lollipop or higher, use getDrawable(int, theme)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white, getTheme()));
+                    }else{
+                        //If running lower than Android Lollipop, use getDrawable(int)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white));
+                    }
+
 
                 }else{
                     //Turn off panic mode
@@ -206,7 +214,13 @@ public class MainActivity extends AppCompatActivity {
                     populateListView();
 
                     //Change icon to off
-                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //If running Android Lollipop or higher, use getDrawable(int, theme)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black, getTheme()));
+                    }else{
+                        //If running lower than Android Lollipop, use getDrawable(int)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black));
+                    }
                 }
                 return true;
 
