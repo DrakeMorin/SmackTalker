@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean panicMode = false;
 
     EditText newMessageText;
-    ListView listView;
+    ListView myListView;
     myDBHandler dbHandler;
 
     //This will store the name of the table for the current conversation.
@@ -109,16 +109,16 @@ public class MainActivity extends AppCompatActivity {
             setUserID();
         }
 
-        listView = (ListView) findViewById(R.id.listView);
+        myListView = (ListView) findViewById(R.id.listView);
         //Add item onClickListener
-        listView.setOnItemClickListener(
+        myListView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         //Get the string value of the view that was touched at position # (which is stored in position
                         //This WILL enable copy to clipboard
 
-                        //Get cursor from listView
+                        //Get cursor from myListView
                         SQLiteCursor c  = (SQLiteCursor) parent.getItemAtPosition(position);
                         //Move cursor position to the corresponding item touched
                         c.moveToPosition(position);
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        //Populate listView with previous messages
+        //Populate myListView with previous messages
         populateListView();
     }
 
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 setUserID();
                 return true;
 
-            /*case R.id.action_panic:
+            case R.id.action_panicOn:
                 if(!panicMode) {
                     //Turn on panic mode
                     panicMode = true;
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                     panicMode = false;
                     populateListView();
                 }
-                return true;*/
+                return true;
 
             default:
                 //User's action unrecognized, use super class to handle it
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
             //Our tables are perfectly in sync.
         }*/
 
-        //Update listView
+        //Update myListView
         populateListView();
     }
 
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
             newMessageText.setText("");
             Log.d(DEBUGTAG, "EditText cleared");
 
-            //Refresh listView
+            //Refresh myListView
             populateListView();
         } else {
             Toast.makeText(MainActivity.this, "No message to send", Toast.LENGTH_SHORT).show();
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onMessageReceived(MessageData md){
         //This method is to be called when a bluetooth message is received
-        //It adds the message to the database and refreshes the listView
+        //It adds the message to the database and refreshes the myListView
         dbHandler.addMessage(currentTable, md);
 
         if(inBack && unread.length() != 0){
@@ -306,17 +306,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateListView() {
-        //Will only populate the listView if panic mode is off.
+        //Will only populate the myListView if panic mode is off.
 
-        if(panicMode){
-            //Panic mode is on, do not show messages
-            //This will get all rows from a table that doesn't exist; no messages will be shown
-            Cursor myCursor = dbHandler.getAllRows("zero");
-        }else{
-            //Panic mode is off, show messages
-            //Get all rows like normal
-            Cursor myCursor = dbHandler.getAllRows(currentTable);
-        }
         Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
         String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
@@ -329,12 +320,18 @@ public class MainActivity extends AppCompatActivity {
         //Get the context, the defined layout being used, the cursor, the columns being read, the location of info being stored, 0
         myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
-        //Set listView
-        ListView myListView = (ListView) findViewById(R.id.listView);
+        //Set myListView
+        myListView = (ListView) findViewById(R.id.listView);
 
-        //Sets listView adapter to the cursorAdapter
-        myListView.setAdapter(myCursorAdapter);
 
+
+        if(panicMode){
+            //Do not show messages; set adapter to null
+            myListView.setAdapter(null);
+        }else {
+            //Messages can be shown; set myListView adapter to the cursorAdapter
+            myListView.setAdapter(myCursorAdapter);
+        }
     }
 
     //For testing purposes.

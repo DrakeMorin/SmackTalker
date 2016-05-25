@@ -8,6 +8,13 @@
         android:title="@string/action_bluetooth"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_panicOn"
+        android:icon="@drawable/panic_icon_black"
+        android:title="@string/action_panicOn"
+        app:showAsAction="ifRoom"
+        />
+
     <item android:id="@+id/action_settings"
         android:title="@string/action_resetUserName"
         app:showAsAction="never"/>
