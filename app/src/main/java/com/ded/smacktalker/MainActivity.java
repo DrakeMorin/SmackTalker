@@ -193,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
             populateListView();
 
 
-
         } else {
             Log.d(DEBUGTAG, "Message Field Empty");
         }

@@ -224,8 +224,6 @@ public class BluetoothChatService {
     /**
      * Write to the ConnectedThread in an unsynchronized manner
      *
-     * @param out The bytes to write
-     * @see ConnectedThread#write(byte[])
      */
     public void write(byte[] out) {
         // Create temporary object
@@ -478,8 +476,6 @@ public class BluetoothChatService {
 
         /**
          * Write to the connected OutStream.
-         *
-         * @param buffer The bytes to write
          */
         public void write(byte[] buffer) {
             try {

@@ -103,9 +103,6 @@ public class BluetoothChatFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Performing this check in onResume() covers the case in which BT was
-        // not enabled during onStart(), so we were paused to enable it...
-        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
         if (mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
             if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
@@ -144,7 +141,6 @@ public class BluetoothChatFragment extends Fragment {
     /**
      * Sends a message.
      *
-     * @param message A string of text to send.
      */
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
@@ -228,9 +224,6 @@ public class BluetoothChatFragment extends Fragment {
 
     /**
      * Establish connection with other divice
-     *
-     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
-     * @param secure Socket Security type - Secure (true) , Insecure (false)
      */
     private void connectDevice(Intent data, boolean secure) {
         // Get the device MAC address
