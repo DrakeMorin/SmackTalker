@@ -261,6 +261,8 @@ public class MainActivity extends AppCompatActivity {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
+                            //Connected to a device.
+                            onConversationStart();
                             newMessageText.setText("");
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
@@ -271,10 +273,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case Constants.MESSAGE_READ:
+                    //When a message is received
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    dbHandler.addMessage(currentTable, new MessageData(readMessage, "12:00", mConnectedDeviceName));
+                    onMessageReceived(new MessageData(readMessage, "12:00", mConnectedDeviceName));
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -440,11 +443,7 @@ public class MainActivity extends AppCompatActivity {
         //currentTable = userID /*+ senderID*/;
 
         //This method checks if a table already exists, otherwise it creates one.
-        dbHandler.createTable(currentTable);
-
-        //Send our deviceID
-        //Receive their deviceID
-        oDeviceID = null;
+        dbHandler.createTable(userID + mConnectedDeviceName);
 
         //Now check to see if both tables are the same and up to date.
         //This should resolve any issues if BT connection is lost before a message is received.
@@ -474,7 +473,6 @@ public class MainActivity extends AppCompatActivity {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
             Toast.makeText(MainActivity.this, "Not connected", Toast.LENGTH_SHORT).show();
-            return;
         }else {
             if (!newMessageText.getText().toString().equals("")) {
                 //Only run if newMessageText is not empty
