@@ -322,6 +322,22 @@ public class MainActivity extends AppCompatActivity {
         mChatService.connect(device, secure);
     }
 
+    //Sends a message.
+    private void sendMessage(String message) {
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+            Toast.makeText(MainActivity.this, "Not connected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get the message bytes and tell the BluetoothChatService to write
+        byte[] send = message.getBytes();
+        mChatService.write(send);
+
+        // Reset out string buffer to zero and clear the edit text field
+        mOutStringBuffer.setLength(0);
+    }
+
     //INFLATES ACTION BAR
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -455,30 +471,42 @@ public class MainActivity extends AppCompatActivity {
 
     //Message is ready to be sent.
     public void sendButtonClicked(View view) {
-        if (!newMessageText.getText().toString().equals("")) {
-            //Only run if newMessageText is not empty
-            //Initialize a calendar to current date
-            Calendar c = Calendar.getInstance();
-            //Create format for the date
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
-            //Format the date and set it to a string
-            String timeStamp = df.format(c.getTime());
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+            Toast.makeText(MainActivity.this, "Not connected", Toast.LENGTH_SHORT).show();
+            return;
+        }else {
+            if (!newMessageText.getText().toString().equals("")) {
+                //Only run if newMessageText is not empty
+                //Initialize a calendar to current date
+                Calendar c = Calendar.getInstance();
+                //Create format for the date
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+                //Format the date and set it to a string
+                String timeStamp = df.format(c.getTime());
 
-            String message = newMessageText.getText().toString();
-            //Add to database a new MessageData object with fields.
-            dbHandler.addMessage(currentTable, new MessageData(message, timeStamp, userID));
+                String message = newMessageText.getText().toString();
+                //Add to database a new MessageData object with fields.
+                dbHandler.addMessage(currentTable, new MessageData(message, timeStamp, userID));
 
-            //Clear text field
-            newMessageText.setText("");
-            Log.d(DEBUGTAG, "EditText cleared");
+                //Clear text field
+                newMessageText.setText("");
+                Log.d(DEBUGTAG, "EditText cleared");
 
-            //Refresh myListView
-            populateListView();
+                //Refresh myListView
+                populateListView();
 
+                // Get the message bytes and tell the BluetoothChatService to write
+                byte[] send = message.getBytes();
+                mChatService.write(send);
 
-        } else {
-            Toast.makeText(MainActivity.this, "No message to send", Toast.LENGTH_SHORT).show();
-            Log.d(DEBUGTAG, "Message Field Empty");
+                // Reset out string buffer to zero and clear the edit text field
+                mOutStringBuffer.setLength(0);
+
+            } else {
+                Toast.makeText(MainActivity.this, "No message to send", Toast.LENGTH_SHORT).show();
+                Log.d(DEBUGTAG, "Message Field Empty");
+            }
         }
     }
 
