@@ -32,33 +32,20 @@ import android.widget.Toast;
 
 public class BluetoothChatFragment extends Fragment {
 
-    // Intent request codes
+    /*// Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
     private String mConnectedDeviceName = null;
 
-    /**
-     * String buffer for outgoing messages
-     */
+    //String buffer for outgoing messages
     private StringBuffer mOutStringBuffer;
-
-    /**
-     * Local Bluetooth adapter
-     */
+    //Local bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
-
-    /**
-     * Member object for the chat services
-     */
+    //Member object for the class services
     private BluetoothChatService mChatService = null;
 
-    /**
-     * Declaring Edit text field
-     */
-
-    myDBHandler dbHandler;
 
 
     @Override
@@ -114,9 +101,7 @@ public class BluetoothChatFragment extends Fragment {
 
 
 
-    /**
-     * Set up the UI and background operations for chat.
-     */
+    //Set up the UI and background operations for chat.
     private void setupChat() {
 
         // Initialize the BluetoothChatService to perform bluetooth connections
@@ -126,9 +111,7 @@ public class BluetoothChatFragment extends Fragment {
         mOutStringBuffer = new StringBuffer("");
     }
 
-    /**
-     * Makes this device discoverable.
-     */
+    //Makes this device discoverable.
     private void ensureDiscoverable() {
         if (mBluetoothAdapter.getScanMode() !=
                 BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
@@ -138,10 +121,7 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
-    /**
-     * Sends a message.
-     *
-     */
+    //Sends a message.
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
@@ -161,9 +141,7 @@ public class BluetoothChatFragment extends Fragment {
 
 
 
-    /**
-     * The Handler that gets information back from the BluetoothChatService
-     */
+    //The Handler that gets information back from the BluetoothChatService
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -222,9 +200,7 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
-    /**
-     * Establish connection with other divice
-     */
+    //Establish connection with other divice
     private void connectDevice(Intent data, boolean secure) {
         // Get the device MAC address
         String address = data.getExtras()
@@ -233,7 +209,7 @@ public class BluetoothChatFragment extends Fragment {
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
         mChatService.connect(device, secure);
-    }
+    }*/
 
 
 }
