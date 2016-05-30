@@ -5,8 +5,22 @@
     <item
         android:id="@+id/action_bluetooth"
         android:icon="@drawable/bluetooth_icon"
-        android:title="Bluetooth"
-        app:showAsAction="always"
+        android:title="@string/action_bluetooth"
+        app:showAsAction="ifRoom"
         />
+    <!--
+        If you add any other icons, or change their order, you must go into
+        MainActivity.onOptionsItemSelected and change the id used for the panic button icon change.
+    -->
+    <item
+        android:id="@+id/action_panic"
+        android:icon="@drawable/panic_icon_black"
+        android:title="@string/action_panic"
+        app:showAsAction="ifRoom"
+        />
+
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_resetUserName"
+        app:showAsAction="never"/>
 
 </menu>

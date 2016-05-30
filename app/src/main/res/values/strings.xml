@@ -9,4 +9,7 @@
     <string name="scanning">Scanning</string>
     <string name="select_device">Select Device</string>
     <string name="none_found">No Devices Found</string>
+    <string name="action_resetUserName">Reset username</string>
+    <string name="action_bluetooth">Bluetooth</string>
+    <string name="action_panic">Panic Button</string>
 </resources>

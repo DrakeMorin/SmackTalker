@@ -3,20 +3,28 @@ package com.ded.smacktalker;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -34,10 +42,24 @@ public class MainActivity extends AppCompatActivity {
     private Button Bluetooth;
     protected static String userID;
     private static final String USERIDKEY = "userID";
+    //This is a constant ID to track the device regardless of the set userID
+    private static String deviceID;
+    private static final String DEVICEKEY = "deviceID";
 
+    //This String will store the deviceID of the other person in the conversation
+    private static String oDeviceID;
 
-    static EditText newMessageText;
+    //This bool will store if the panic mode has been activated
+    static boolean panicMode = false;
+
+    EditText newMessageText;
+    ListView myListView;
+    Menu menu;
     myDBHandler dbHandler;
+
+
+    //This will store the name of the table for the current conversation.
+    String currentTable = myDBHandler.TABLE_MESSAGES;
 
     //Used for randomly generated userIDs
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -45,10 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
     //Preferences which carry across run time sessions
     SharedPreferences prefs;
+    SharedPreferences.Editor editor;
     //Will contain all messages currently unread
     StringBuilder unread;
     //Will store whether the app is in the fore or background
-    private boolean inBack = false;
+    static boolean inBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +84,31 @@ public class MainActivity extends AppCompatActivity {
         //Variable instantiation
         newMessageText = (EditText) findViewById(R.id.newMessageText);
         prefs = getPreferences(MODE_PRIVATE);
-        rnd = new SecureRandom();
+        editor = prefs.edit();
         unread = new StringBuilder();
+        rnd = new SecureRandom();
 
+        //Get deviceID from preferences
+        deviceID = prefs.getString(DEVICEKEY, null);
 
-        //Null is the default value. If no userID is saved, the default value assigned will ne null.
+        if(deviceID == null){
+            //One in 57 billion chance of two users having the same deviceID with this method
+            //Create randomized deviceID
+            int len = 6;
+            StringBuilder sb = new StringBuilder( len );
+            //Random # created which points to a string of all possible chars.
+            //Appends that char onto the userID and repeats until desired length.
+            for( int i = 0; i < len; i++ ) {
+                sb.append(AB.charAt(rnd.nextInt(AB.length())));
+            }
+            deviceID = sb.toString();
+
+            //Stores the userID under the key specified in the final USERIDKEY
+            editor.putString(DEVICEKEY, deviceID);
+            editor.apply();
+        }
+
+        //Null is the default value. If no userID is saved, the default value assigned will be null.
         userID = prefs.getString(USERIDKEY, null);
 
         if(userID == null){
@@ -74,30 +117,43 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        /*ListView listView = (ListView) findViewById(R.id.listView);
+        myListView = (ListView) findViewById(R.id.listView);
         //Add item onClickListener
-        listView.setOnItemClickListener(
+        myListView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
                         //Get the string value of the view that was touched at position # (which is stored in position
-                        //This WILL enable copy and pasting later.
-                        String message = String.valueOf(parent.getItemAtPosition(position).toString());
-                        Log.d("DED", message);
+                        //This WILL enable copy to clipboard
+
+                        //Get cursor from myListView
+                        SQLiteCursor c  = (SQLiteCursor) parent.getItemAtPosition(position);
+                        //Move cursor position to the corresponding item touched
+                        c.moveToPosition(position);
+                        //Get the Message from the MESSAGETEXT column in the database
+                        String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGETEXT));
+
+                        //Save message to clipboard
+                        //Get handle for clipboard service
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        //Create text clip
+                        ClipData clip = ClipData.newPlainText(DEBUGTAG, message);
+                        //Add text clip to clipboard
+                        clipboard.setPrimaryClip(clip);
+
+                        Toast.makeText(MainActivity.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
                     }
                 }
-        );*/
+        );
 
-        //Populate listView with previous messages
+        //Populate myListView with previous messages
         populateListView();
     }
 
     @Override
     protected void onResume() {
         //When the app is resumed from background, assume all messages are read.
-        //Clear the unread bit.
+        //Clear the unread messages stored in the stringbuilder.
         unread.delete(0, unread.length());
 
         //App is now in the foreground, not the back.
@@ -119,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
         Log.d(DEBUGTAG, "Options Menu Inflated");
         return true;
     }
@@ -127,12 +184,53 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.action_bluetooth) {
-            Log.d(DEBUGTAG, "Bluetooth button pressed");
-            //Start the btButtonClick();
-            btButtonClick();
+        switch (item.getItemId()){
+            case R.id.action_bluetooth:
+                Log.d(DEBUGTAG, "Bluetooth button pressed");
+                btButtonClick();
+                return true;
+
+            case R.id.action_settings:
+                //User clicked on the settings
+                setUserID();
+                return true;
+
+            case R.id.action_panic:
+                if(!panicMode) {
+                    //Turn on panic mode
+                    panicMode = true;
+                    populateListView();
+
+                    //Change icon to on
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //If running Android Lollipop or higher, use getDrawable(int, theme)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white, getTheme()));
+                    }else{
+                        //If running lower than Android Lollipop, use getDrawable(int)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white));
+                    }
+
+
+                }else{
+                    //Turn off panic mode
+                    panicMode = false;
+                    populateListView();
+
+                    //Change icon to off
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //If running Android Lollipop or higher, use getDrawable(int, theme)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black, getTheme()));
+                    }else{
+                        //If running lower than Android Lollipop, use getDrawable(int)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black));
+                    }
+                }
+                return true;
+
+            default:
+                //User's action unrecognized, use super class to handle it
+                return super.onOptionsItemSelected(item);
         }
-        return true;
     }
 
     //What happens if btButton is clicked;
@@ -165,16 +263,50 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
 
+    protected void onConversationStart(){
+        //This method is to be called when a conversation is started with someone.
+        //This will load any past messages if a table exists.
 
+        //Set the name that will reference corresponding database table.
+        //currentTable = userID /*+ senderID*/;
 
+        //This method checks if a table already exists, otherwise it creates one.
+        dbHandler.createTable(currentTable);
+
+        //Send our deviceID
+        //Receive their deviceID
+        oDeviceID = null;
+
+        //Now check to see if both tables are the same and up to date.
+        //This should resolve any issues if BT connection is lost before a message is received.
+        //REQUIREMENT: BOTH PARTIES MUST SEND THE SIZE OF THEIR TABLE USING .getCount()
+        /* RESTORE ONCE BLUETOOTH IS WORKING
+        //Store our table size
+        int mRowCount = dbHandler.getCount(currentTable);
+        //Get and store their table size
+        int yRowCount = 0; //Call method to get the partners row count. Essentially, they pass each other their mRowCount
+
+        if(mRowCount > yRowCount){
+            //Our table has messages they haven't received
+            //Send our table information
+        }else if(mRowCount < yRowCount){
+            //Their table has messages we haven't received
+            //Receive their table information
+        }else{
+            //Our tables are perfectly in sync.
+        }*/
+
+        //Update myListView
+        populateListView();
     }
 
     //Message is ready to be sent.
     public void sendButtonClicked(View view) {
         if (!newMessageText.getText().toString().equals("")) {
             //Only run if newMessageText is not empty
-            //Intialize a calendar to current date
+            //Initialize a calendar to current date
             Calendar c = Calendar.getInstance();
             //Create format for the date
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
@@ -183,30 +315,39 @@ public class MainActivity extends AppCompatActivity {
 
             String message = newMessageText.getText().toString();
             //Add to database a new MessageData object with fields.
-            dbHandler.addMessage(new MessageData(message, timeStamp, userID));
+            dbHandler.addMessage(currentTable, new MessageData(message, timeStamp, userID));
 
             //Clear text field
             newMessageText.setText("");
             Log.d(DEBUGTAG, "EditText cleared");
 
-            //Refresh listView
+            //Refresh myListView
             populateListView();
 
 
         } else {
+            Toast.makeText(MainActivity.this, "No message to send", Toast.LENGTH_SHORT).show();
             Log.d(DEBUGTAG, "Message Field Empty");
         }
     }
 
-    public void onMessageReceived(MessageData md){
+    protected void onMessageReceived(MessageData md){
         //This method is to be called when a bluetooth message is received
-        //It adds the message to the database and refreshes the listView
-        dbHandler.addMessage(md);
+        //It adds the message to the database and refreshes the myListView
+        dbHandler.addMessage(currentTable, md);
+
+        if(inBack && unread.length() != 0){
+            //If this is the first unread message, put the senderID at the top of the notification text
+            unread.append(md.getSenderID());
+            unread.append(": \n");
+        }
 
         if(inBack){
             //The app is in the background, the message is unread
             unread.append(md.getMessage());
-            unread.append('\n');
+            unread.append("\n");
+            //Create notification
+            createNotification();
         }
 
         //Refresh the list view
@@ -214,50 +355,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateListView() {
-        Cursor myCursor = dbHandler.getAllRows();
+        //Will only populate the myListView if panic mode is off.
+
+        Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
-        String [] fromFieldNames = new String[] {myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
+        String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
 
         //Where the data is going to go.
-        int[] toViewIDs = new int[] {R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
+        int[] toViewIDs = new int[]{R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
 
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
         //Get the context, the defined layout being used, the cursor, the columns being read, the location of info being stored, 0
         myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
-        //Set listView
-        ListView myListView = (ListView) findViewById(R.id.listView);
+        //Set myListView
+        myListView = (ListView) findViewById(R.id.listView);
 
-        //Sets listView adapter to the cursorAdapter
-        myListView.setAdapter(myCursorAdapter);
+
+
+        if(panicMode){
+            //Do not show messages; set adapter to null
+            myListView.setAdapter(null);
+        }else {
+            //Messages can be shown; set myListView adapter to the cursorAdapter
+            myListView.setAdapter(myCursorAdapter);
+        }
     }
 
     //For testing purposes.
     public void testButtonClicked(View view){
-        //Send message as if it was received from someone else.
-        inBack = true;
-        onMessageReceived(new MessageData(newMessageText.getText().toString(), "Test", "Not You"));
+        //Change table name for testing.
+        currentTable = newMessageText.getText().toString();
+        onConversationStart();
         newMessageText.setText("");
-        createNotification();
     }
 
-    public void createNotification(){
-        //Toast.makeText(MainActivity.this, "Toast Message", Toast.LENGTH_LONG).show();
-
-        /*
-        * Once Bluetooth is working, revisit this method. The goal is that as more messages are
-        * received but not read, this method will update the notification to show all unread messages
-        * separated by hard returns. This will require tracking what messages have been received
-        * since the app was last opened, and adding those messages to String notifyText.
-        *
-        * Finally, the notification ID should be unique to each conversation. As such, I will
-        * base it off the integer value of the sender's userID. This should ensure that if you receive
-        * multiple messages from different conversations, they all get their own notification.
-         */
-
+    private void createNotification(){
+        //This will store and build the notification and its data
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-        mBuilder.setSmallIcon(R.drawable.img);
+        //Set notification info
+        mBuilder.setSmallIcon(R.drawable.logo_round);
         mBuilder.setContentTitle("SmackTalker: Unread Messages");
         mBuilder.setContentText(unread.toString());
         //Notification will disappear when clicked on.
@@ -280,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // notificationID allows you to update the notification later on.
+        //notificationID allows you to update the notification later on.
         //mBuilder.build() returns a Notification containing above specifications.
         mNotifyMgr.notify(0, mBuilder.build());
     }
@@ -311,8 +449,6 @@ public class MainActivity extends AppCompatActivity {
                 userID = userIDText.getText().toString();
                 Toast.makeText(MainActivity.this, "UserID set", Toast.LENGTH_SHORT).show();
 
-                //Save the userID to preferences.
-                SharedPreferences.Editor editor = prefs.edit();
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
                 editor.apply();
@@ -326,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
 
                 int len = 8;
                 StringBuilder sb = new StringBuilder( len );
+                rnd = new SecureRandom();
                 //Random # created which points to a string of all possible chars.
                 //Appends that char onto the userID and repeats until desired length.
                 for( int i = 0; i < len; i++ ) {
@@ -334,8 +471,6 @@ public class MainActivity extends AppCompatActivity {
                 userID = sb.toString();
                 Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
 
-                //Save the userID to preferences.
-                SharedPreferences.Editor editor = prefs.edit();
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
                 editor.apply();
