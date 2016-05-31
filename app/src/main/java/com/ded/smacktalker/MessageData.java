@@ -1,7 +1,9 @@
 package com.ded.smacktalker;
 
 
-class MessageData {
+import java.io.Serializable;
+
+class MessageData implements Serializable{
     //Objects of this class will be used to hold the text messages sent and received
 
     //Holds the sent message

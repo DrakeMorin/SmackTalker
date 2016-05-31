@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +36,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -114,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             //One in 57 billion chance of two users having the same deviceID with this method
             //Create randomized deviceID
             int len = 6;
-            StringBuilder sb = new StringBuilder( len );
+            StringBuilder sb = new StringBuilder(len);
             //Random # created which points to a string of all possible chars.
             //Appends that char onto the userID and repeats until desired length.
             for( int i = 0; i < len; i++ ) {
@@ -268,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
                         case BluetoothChatService.STATE_CONNECTING:
                             break;
                         case BluetoothChatService.STATE_LISTEN:
+                            break;
                         case BluetoothChatService.STATE_NONE:
                             break;
                     }
@@ -277,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    onMessageReceived(new MessageData(readMessage, "12:00", mConnectedDeviceName));
+                    onMessageReceived(readBuf);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -323,22 +333,6 @@ public class MainActivity extends AppCompatActivity {
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
         mChatService.connect(device, secure);
-    }
-
-    //Sends a message.
-    private void sendMessage(String message) {
-        // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
-            Toast.makeText(MainActivity.this, "Not connected", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Get the message bytes and tell the BluetoothChatService to write
-        byte[] send = message.getBytes();
-        mChatService.write(send);
-
-        // Reset out string buffer to zero and clear the edit text field
-        mOutStringBuffer.setLength(0);
     }
 
     //INFLATES ACTION BAR
@@ -494,8 +488,9 @@ public class MainActivity extends AppCompatActivity {
                 //Refresh myListView
                 populateListView();
 
-                // Get the message bytes and tell the BluetoothChatService to write
-                byte[] send = message.getBytes();
+                //Convert object to byte[]
+                byte[] send = convertToBytes(new MessageData(message, timeStamp, userID));
+                //Have BluetoothChatService write object
                 mChatService.write(send);
 
                 // Reset out string buffer to zero and clear the edit text field
@@ -508,8 +503,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected void onMessageReceived(MessageData md){
+    protected void onMessageReceived(byte[] bytes){
         //This method is to be called when a bluetooth message is received
+
+        //Convert byte[] to usable object
+        MessageData md = convertFromBytes(bytes);
+
         //It adds the message to the database and refreshes the myListView
         dbHandler.addMessage(currentTable, md);
 
@@ -658,5 +657,59 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog aDialog = dialogBuilder.create();
         //Show the dialog
         aDialog.show();
+    }
+
+    private byte[] convertToBytes(MessageData md) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out = null;
+        byte[] mBytes = null;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(md);
+            mBytes = bos.toByteArray();
+        }catch(Exception e){
+            //Disregard this
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException ex) {
+                //Ignore close exception
+            }
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                //Ignore close exception
+            }
+        }
+        return mBytes;
+    }
+
+    private MessageData convertFromBytes(byte[] bytes) {
+        MessageData md = null;
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        ObjectInput in = null;
+        try {
+            in = new ObjectInputStream(bis);
+            md = (MessageData) in.readObject();
+        } catch (Exception e){
+            //Disregard
+        } finally {
+            try {
+                bis.close();
+            } catch (IOException ex) {
+                //Ignore close exception
+            }
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                //Ignore close exception
+            }
+        }
+        return md;
     }
 }
