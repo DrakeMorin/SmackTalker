@@ -12,3 +12,16 @@ The coding for Bluetooth is based on a conversation.  There is an initial greeti
 Having learned Git and GitHub, we plan to use GitHub to help our collaboration, and track our project over its development. Keeping with that, we will endeavour to make commits based on each logical change.
 
 Note that many commits from April 11 - 13 were attempted fixes at resolving missing code. This issue was eventually resolved.
+
+FEATURES:
+-Send and receive messages each containing message, senderID, and time stamp
+-Sender image is extrapolated based on the first char of the senderID for a given message
+-All messages stored in mySQL database, each conversation in its own table
+-Image support for all possible device screen resolutions
+-Dialog for setting userID, optional randomization
+-Storing IDs in Device SharedPrefernces which are constant across runtime sessions
+-Ability to reset userID on demand
+-Tracking messages received that have not been read
+-Creation of notifications that when clicked, return you to the app
+-Panic mode which will hide all messages from screen
+-Our very own unique logo
