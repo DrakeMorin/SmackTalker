@@ -237,17 +237,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         //Set bool saying app is running in background
         inBack = true;
     }
 
     //Set up the UI and background operations for chat.
     private void setupChat() {
-
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothChatService(MainActivity.this,  mHandler);
-
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
     }
@@ -373,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
                         //If running lower than Android Lollipop, use getDrawable(int)
                         menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white));
                     }
-
+                    Log.d(DEBUGTAG, "Panic mode on");
 
                 }else{
                     //Turn off panic mode
@@ -388,6 +385,7 @@ public class MainActivity extends AppCompatActivity {
                         //If running lower than Android Lollipop, use getDrawable(int)
                         menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black));
                     }
+                    Log.d(DEBUGTAG, "Panic mode off");
                 }
                 return true;
 
@@ -460,6 +458,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Update myListView
         populateListView();
+        Log.d(DEBUGTAG, "New conversation initialized");
     }
 
     //Message is ready to be sent.
@@ -483,7 +482,6 @@ public class MainActivity extends AppCompatActivity {
 
                 //Clear text field
                 newMessageText.setText("");
-                Log.d(DEBUGTAG, "EditText cleared");
 
                 //Refresh myListView
                 populateListView();
@@ -495,10 +493,11 @@ public class MainActivity extends AppCompatActivity {
 
                 // Reset out string buffer to zero and clear the edit text field
                 mOutStringBuffer.setLength(0);
+                Log.d(DEBUGTAG, "Message sent");
 
             } else {
                 Toast.makeText(MainActivity.this, "No message to send", Toast.LENGTH_SHORT).show();
-                Log.d(DEBUGTAG, "Message Field Empty");
+                Log.d(DEBUGTAG, "Message field empty");
             }
         }
     }
@@ -528,6 +527,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Refresh the list view
         populateListView();
+        Log.d(DEBUGTAG, "Message received");
     }
 
     private void populateListView() {
@@ -548,14 +548,14 @@ public class MainActivity extends AppCompatActivity {
         //Set myListView
         myListView = (ListView) findViewById(R.id.listView);
 
-
-
         if(panicMode){
             //Do not show messages; set adapter to null
             myListView.setAdapter(null);
+            Log.d(DEBUGTAG, "Still in panic mode!");
         }else {
             //Messages can be shown; set myListView adapter to the cursorAdapter
             myListView.setAdapter(myCursorAdapter);
+            Log.d(DEBUGTAG, "ListView refreshed");
         }
     }
 
