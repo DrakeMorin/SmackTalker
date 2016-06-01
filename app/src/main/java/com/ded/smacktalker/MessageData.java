@@ -2,6 +2,9 @@ package com.ded.smacktalker;
 
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 class MessageData implements Serializable{
     //Objects of this class will be used to hold the text messages sent and received
@@ -48,17 +51,17 @@ class MessageData implements Serializable{
             R.mipmap.special_img,
     };
 
-    public MessageData(String message, String time, String senderID) {
+    public MessageData(String message, String senderID) {
         //Constructor that sets data
         this.message = message;
-        this.time = time;
+        this.time = setTimeStamp();
         this.senderID = senderID;
         this.imgID = parseSenderID();
     }
 
     @Override
     public String toString() {
-        return getMessage();
+        return message;
     }
 
     private int parseSenderID(){
@@ -86,6 +89,15 @@ class MessageData implements Serializable{
 
         //Return the image id value.
         return myImageArray[charID];
+    }
+
+    private String setTimeStamp(){
+        //Initialize a calendar to current date
+        Calendar c = Calendar.getInstance();
+        //Create format for the date
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+        //Return the formatted date as a String
+        return df.format(c.getTime());
     }
 
     //GETTER METHODS

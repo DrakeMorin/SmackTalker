@@ -465,16 +465,10 @@ public class MainActivity extends AppCompatActivity {
         }else {
             if (!newMessageText.getText().toString().equals("")) {
                 //Only run if newMessageText is not empty
-                //Initialize a calendar to current date
-                Calendar c = Calendar.getInstance();
-                //Create format for the date
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
-                //Format the date and set it to a string
-                String timeStamp = df.format(c.getTime());
 
                 String message = newMessageText.getText().toString();
                 //Add to database a new MessageData object with fields.
-                dbHandler.addMessage(currentTable, new MessageData(message, timeStamp, userID));
+                dbHandler.addMessage(currentTable, new MessageData(message, userID));
 
                 //Clear text field
                 newMessageText.setText("");
@@ -483,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
                 populateListView();
 
                 //Convert object to byte[]
-                byte[] send = convertToBytes(new MessageData(message, timeStamp, userID));
+                byte[] send = convertToBytes(new MessageData(message, userID));
                 //Have BluetoothChatService write object
                 mChatService.write(send);
 
@@ -557,10 +551,8 @@ public class MainActivity extends AppCompatActivity {
 
     //For testing purposes.
     public void testButtonClicked(View view){
-        //Change table name for testing.
-        currentTable = newMessageText.getText().toString();
-        onConversationStart();
-        newMessageText.setText("");
+        //Change test serialization
+         MessageData md = new MessageData(newMessageText.getText().toString(), userID);
     }
 
     private void createNotification(){
