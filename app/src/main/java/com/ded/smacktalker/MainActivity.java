@@ -418,8 +418,6 @@ public class MainActivity extends AppCompatActivity {
             String address = btAdapter.getAddress();
             String name = btAdapter.getName();
             String statusText = name + ":" + address;
-
-
         }
     }
 
@@ -553,6 +551,13 @@ public class MainActivity extends AppCompatActivity {
     public void testButtonClicked(View view){
         //Change test serialization
          MessageData md = new MessageData(newMessageText.getText().toString(), userID);
+        byte[] myBytes = convertToBytes(md);
+        Log.d(DEBUGTAG, myBytes.toString());
+        Log.d(DEBUGTAG, "" + myBytes.length);
+        MessageData test = convertFromBytes(myBytes);
+        Log.d(DEBUGTAG, test.toString());
+        dbHandler.addMessage(currentTable, test);
+        populateListView();
     }
 
     private void createNotification(){
