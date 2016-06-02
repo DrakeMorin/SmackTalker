@@ -457,8 +457,15 @@ public class MainActivity extends AppCompatActivity {
 
     //Message is ready to be sent.
     public void sendButtonClicked(View view) {
+        boolean btCondition = true;
+        try{
+            btCondition = mChatService.getState() != BluetoothChatService.STATE_CONNECTED;
+        }catch (Exception e){
+            //Bluetooth state not initialized; user likely dismissed dialog box without hitting Yes/No
+            Log.d(DEBUGTAG, "btCondition failed to set");
+        }
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+        if (btCondition) {
             Toast.makeText(MainActivity.this, "Not connected", Toast.LENGTH_SHORT).show();
         }else {
             if (!newMessageText.getText().toString().equals("")) {
@@ -476,6 +483,8 @@ public class MainActivity extends AppCompatActivity {
 
                 //Convert object to byte[]
                 byte[] send = convertToBytes(new MessageData(message, userID));
+
+
                 //Have BluetoothChatService write object
                 mChatService.write(send);
 
@@ -552,7 +561,6 @@ public class MainActivity extends AppCompatActivity {
         //Change test serialization
          MessageData md = new MessageData(newMessageText.getText().toString(), userID);
         byte[] myBytes = convertToBytes(md);
-        Log.d(DEBUGTAG, myBytes.toString());
         Log.d(DEBUGTAG, "" + myBytes.length);
         MessageData test = convertFromBytes(myBytes);
         Log.d(DEBUGTAG, test.toString());
