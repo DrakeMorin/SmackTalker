@@ -79,14 +79,12 @@ public class BluetoothChatService {
         mHandler.obtainMessage(Constants.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
-    /**
-     * Return the current connection state.
-     */
+    // Return the current connection state.
     public synchronized int getState() {
         return mState;
     }
 
-    /**
+    /*
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume()
      */
@@ -193,9 +191,7 @@ public class BluetoothChatService {
         setState(STATE_CONNECTED);
     }
 
-    /**
-     * Stop all threads
-     */
+    // Stop all threads
     public synchronized void stop() {
         Log.d(TAG, "stop");
 
@@ -221,10 +217,7 @@ public class BluetoothChatService {
         setState(STATE_NONE);
     }
 
-    /**
-     * Write to the ConnectedThread in an unsynchronized manner
-     *
-     */
+    // Write to the ConnectedThread in an unsynchronized manner
     public void write(byte[] out) {
         // Create temporary object
         ConnectedThread r;
@@ -237,9 +230,7 @@ public class BluetoothChatService {
         r.write(out);
     }
 
-    /**
-     * Indicate that the connection attempt failed and notify the UI Activity.
-     */
+    // Indicate that the connection attempt failed and notify the UI Activity.
     private void connectionFailed() {
         // Send a failure message back to the Activity
 
@@ -250,9 +241,7 @@ public class BluetoothChatService {
         BluetoothChatService.this.start();
     }
 
-    /**
-     * Indicate that the connection was lost and notify the UI Activity.
-     */
+    // Indicate that the connection was lost and notify the UI Activity.
     private void connectionLost() {
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
@@ -474,9 +463,7 @@ public class BluetoothChatService {
             }
         }
 
-        /**
-         * Write to the connected OutStream.
-         */
+        // Write to the connected OutStream.
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
