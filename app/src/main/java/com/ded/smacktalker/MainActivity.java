@@ -47,6 +47,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+
+
     protected final static String DEBUGTAG = "DED";
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
