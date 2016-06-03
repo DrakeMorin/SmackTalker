@@ -439,10 +439,11 @@ public class MainActivity extends AppCompatActivity {
         //This will load any past messages if a table exists.
 
         //Set the name that will reference corresponding database table.
-        //currentTable = userID /*+ senderID*/;
+        currentTable = (userID + mConnectedDeviceName).replaceAll("\\s", "");
+
 
         //This method checks if a table already exists, otherwise it creates one.
-        dbHandler.createTable(userID + mConnectedDeviceName);
+        dbHandler.createTable(currentTable);
 
         //Now check to see if both tables are the same and up to date.
         //This should resolve any issues if BT connection is lost before a message is received.
