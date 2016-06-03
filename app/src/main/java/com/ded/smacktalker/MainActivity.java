@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
             //Only runs if there is data in the bundle.
             String address = myBundle.getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
             Log.d(DEBUGTAG, "Address received: " + address);
-            connectDevice(false, address);
+            connectDevice(true, address);
         }
     }
 
