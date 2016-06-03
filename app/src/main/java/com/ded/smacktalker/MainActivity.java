@@ -183,6 +183,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
+
+        Bundle myBundle = getIntent().getExtras();
+        if(myBundle != null){
+            //Only runs if there is data in the bundle.
+            String address = myBundle.getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+            Log.d(DEBUGTAG, "Address received: " + address);
+            //CALL onActivityResult; NEED REQUESTCODE AND RESULTCODE FROM SOMEWHERE!!!!
+            connectDevice(false, address);
+        }
     }
 
     @Override
@@ -300,28 +309,27 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, String address) {
+        Log.d(DEBUGTAG, "onActivityResult started!!!!");
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(data, true);
+                    connectDevice(true, address);
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(data, false);
+                    connectDevice(false, address);
                 }
                 break;
         }
     }
 
     //Establish connection with other divice
-    private void connectDevice(Intent data, boolean secure) {
-        // Get the device MAC address
-        String address = data.getExtras()
-                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+    private void connectDevice(boolean secure, String address) {
+        Log.d(DEBUGTAG, address);
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
