@@ -174,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
         populateListView();
 
         //BLUETOOTH STUFF
+        //Instantiate mChatService
+        mChatService = new BluetoothChatService(MainActivity.this, mHandler);
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -189,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
             //Only runs if there is data in the bundle.
             String address = myBundle.getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
             Log.d(DEBUGTAG, "Address received: " + address);
-            //CALL onActivityResult; NEED REQUESTCODE AND RESULTCODE FROM SOMEWHERE!!!!
             connectDevice(false, address);
         }
     }
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
     //Set up the UI and background operations for chat.
     private void setupChat() {
         // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BluetoothChatService(MainActivity.this,  mHandler);
+        mChatService = new BluetoothChatService(MainActivity.this, mHandler);
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
     }
@@ -327,11 +328,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Establish connection with other divice
+    //Establish connection with other device
     private void connectDevice(boolean secure, String address) {
-        Log.d(DEBUGTAG, address);
+        Log.d(DEBUGTAG, "CONNECTDEVICE STARTED!?");
+        Log.d(DEBUGTAG, "Connect: " + address);
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        Log.d(DEBUGTAG, "Bluetooth Device created");
         // Attempt to connect to the device
         mChatService.connect(device, secure);
     }
