@@ -439,30 +439,11 @@ public class MainActivity extends AppCompatActivity {
         //This will load any past messages if a table exists.
 
         //Set the name that will reference corresponding database table.
+        //Replace all removes all spaces from the string and replaces them with nothing.
         currentTable = (userID + mConnectedDeviceName).replaceAll("\\s", "");
-
 
         //This method checks if a table already exists, otherwise it creates one.
         dbHandler.createTable(currentTable);
-
-        //Now check to see if both tables are the same and up to date.
-        //This should resolve any issues if BT connection is lost before a message is received.
-        //REQUIREMENT: BOTH PARTIES MUST SEND THE SIZE OF THEIR TABLE USING .getCount()
-        /* RESTORE ONCE BLUETOOTH IS WORKING
-        //Store our table size
-        int mRowCount = dbHandler.getCount(currentTable);
-        //Get and store their table size
-        int yRowCount = 0; //Call method to get the partners row count. Essentially, they pass each other their mRowCount
-
-        if(mRowCount > yRowCount){
-            //Our table has messages they haven't received
-            //Send our table information
-        }else if(mRowCount < yRowCount){
-            //Their table has messages we haven't received
-            //Receive their table information
-        }else{
-            //Our tables are perfectly in sync.
-        }*/
 
         //Update myListView
         populateListView();
