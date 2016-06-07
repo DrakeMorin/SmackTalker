@@ -311,6 +311,8 @@ public class BluetoothChatFragment extends Fragment {
                         byte[] send = convertToBytes(new MessageData(message, userID));
 
                         sendMessage(send);
+                    }else {
+                        Toast.makeText(getContext(), "No message to send", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -362,20 +364,24 @@ public class BluetoothChatFragment extends Fragment {
         public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
             // If the action is a key-up event on the return key, send the message
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                String message = newMessageText.getText().toString();
-                //Add to database a new MessageData object with fields.
-                dbHandler.addMessage(currentTable, new MessageData(message, userID));
+                if(!newMessageText.getText().toString().equals("")) {
+                    String message = newMessageText.getText().toString();
+                    //Add to database a new MessageData object with fields.
+                    dbHandler.addMessage(currentTable, new MessageData(message, userID));
 
-                //Clear text field
-                newMessageText.setText("");
+                    //Clear text field
+                    newMessageText.setText("");
 
-                //Refresh myListView
-                populateListView();
+                    //Refresh myListView
+                    populateListView();
 
-                //Convert object to byte[]
-                byte[] send = convertToBytes(new MessageData(message, userID));
+                    //Convert object to byte[]
+                    byte[] send = convertToBytes(new MessageData(message, userID));
 
-                sendMessage(send);
+                    sendMessage(send);
+                }else {
+                    Toast.makeText(getContext(), "No message to send", Toast.LENGTH_SHORT).show();
+                }
             }
             return true;
         }
