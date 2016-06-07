@@ -162,8 +162,7 @@ public class BluetoothChatFragment extends Fragment {
             setUserID();
         }
 
-        //Populate myListView with previous messages
-        populateListView();
+
 
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -223,6 +222,7 @@ public class BluetoothChatFragment extends Fragment {
                 mChatService.start();
             }
         }
+        populateListView();
     }
 
     @Override
@@ -244,7 +244,7 @@ public class BluetoothChatFragment extends Fragment {
         newMessageText = (EditText) view.findViewById(R.id.newMessageText);
         mSendButton = (Button) view.findViewById(R.id.sendButton);
         testButton = (Button) view.findViewById(R.id.testButton);
-        myListView = (ListView) view.findViewById(R.id.listView);
+        Log.d(TAG, "Views created");
     }
 
     /**
@@ -643,12 +643,12 @@ public class BluetoothChatFragment extends Fragment {
         //Get the context, the defined layout being used, the cursor, the columns being read, the location of info being stored, 0
         myCursorAdapter = new SimpleCursorAdapter(getContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
-
         if(panicMode){
             //Do not show messages; set adapter to null
             myListView.setAdapter(null);
             Log.d(TAG, "Still in panic mode!");
         }else {
+            Log.d(TAG, "Crash incoming!! See populateListView: myListView.setAdapter(myCursorAdapter)");
             //Messages can be shown; set myListView adapter to the cursorAdapter
             myListView.setAdapter(myCursorAdapter);
             Log.d(TAG, "ListView refreshed");
