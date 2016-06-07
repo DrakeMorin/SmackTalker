@@ -1,5 +1,3 @@
-
-
 package com.ded.smacktalker;
 
 import android.bluetooth.BluetoothAdapter;
@@ -11,9 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
-
-
+import com.ded.smacktalker.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,7 +37,7 @@ public class BluetoothChatService {
 
     // Member fields
     private final BluetoothAdapter mAdapter;
-    public final Handler mHandler;
+    private final Handler mHandler;
     private AcceptThread mSecureAcceptThread;
     private AcceptThread mInsecureAcceptThread;
     private ConnectThread mConnectThread;
@@ -79,12 +75,14 @@ public class BluetoothChatService {
         mHandler.obtainMessage(Constants.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
-    // Return the current connection state.
+    /**
+     * Return the current connection state.
+     */
     public synchronized int getState() {
         return mState;
     }
 
-    /*
+    /**
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume()
      */
@@ -119,9 +117,11 @@ public class BluetoothChatService {
     /**
      * Start the ConnectThread to initiate a connection to a remote device.
      *
+     * @param device The BluetoothDevice to connect
+     * @param secure Socket Security type - Secure (true) , Insecure (false)
      */
     public synchronized void connect(BluetoothDevice device, boolean secure) {
-        Log.d(TAG, "connect to: " + device.toString());
+        Log.d(TAG, "connect to: " + device);
 
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
@@ -189,7 +189,9 @@ public class BluetoothChatService {
         setState(STATE_CONNECTED);
     }
 
-    // Stop all threads
+    /**
+     * Stop all threads
+     */
     public synchronized void stop() {
         Log.d(TAG, "stop");
 
@@ -215,7 +217,12 @@ public class BluetoothChatService {
         setState(STATE_NONE);
     }
 
-    // Write to the ConnectedThread in an unsynchronized manner
+    /**
+     * Write to the ConnectedThread in an unsynchronized manner
+     *
+     * @param out The bytes to write
+     * @see ConnectedThread#write(byte[])
+     */
     public void write(byte[] out) {
         // Create temporary object
         ConnectedThread r;
@@ -228,18 +235,24 @@ public class BluetoothChatService {
         r.write(out);
     }
 
-    // Indicate that the connection attempt failed and notify the UI Activity.
+    /**
+     * Indicate that the connection attempt failed and notify the UI Activity.
+     */
     private void connectionFailed() {
         // Send a failure message back to the Activity
-
-
-        //INSERT TOAST LATER
+        Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.TOAST, "Unable to connect device");
+        msg.setData(bundle);
+        mHandler.sendMessage(msg);
 
         // Start the service over to restart listening mode
         BluetoothChatService.this.start();
     }
 
-    // Indicate that the connection was lost and notify the UI Activity.
+    /**
+     * Indicate that the connection was lost and notify the UI Activity.
+     */
     private void connectionLost() {
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
@@ -443,7 +456,7 @@ public class BluetoothChatService {
             int bytes;
 
             // Keep listening to the InputStream while connected
-            while (true) {
+            while (mState == STATE_CONNECTED) {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
@@ -461,7 +474,11 @@ public class BluetoothChatService {
             }
         }
 
-        // Write to the connected OutStream.
+        /**
+         * Write to the connected OutStream.
+         *
+         * @param buffer The bytes to write
+         */
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
@@ -483,3 +500,4 @@ public class BluetoothChatService {
         }
     }
 }
+
