@@ -14,6 +14,7 @@ package com.ded.smacktalker;
         import android.content.SharedPreferences;
         import android.database.Cursor;
         import android.database.sqlite.SQLiteCursor;
+        import android.os.Build;
         import android.os.Bundle;
         import android.os.Handler;
         import android.os.Message;
@@ -92,6 +93,8 @@ public class BluetoothChatFragment extends Fragment {
     static boolean inBack = false;
     //Will store if device is in panic mode
     static boolean panicMode = false;
+
+    Menu menu;
 
     /**
      * Name of the connected device
@@ -514,6 +517,7 @@ public class BluetoothChatFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.bluetooth_chat, menu);
+        this.menu = menu;
     }
 
     @Override
@@ -534,6 +538,45 @@ public class BluetoothChatFragment extends Fragment {
             case R.id.discoverable: {
                 // Ensure this device is discoverable by others
                 ensureDiscoverable();
+                return true;
+            }
+
+            case R.id.action_settings: {
+                setUserID();
+                return true;
+            }
+
+            case R.id.action_panic: {
+                if(!panicMode) {
+                    //Turn on panic mode
+                    panicMode = true;
+                    populateListView();
+
+                    //Change icon to on
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //If running Android Lollipop or higher, use getDrawable(int, theme)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white, null));
+                    }else{
+                        //If running lower than Android Lollipop, use getDrawable(int)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white));
+                    }
+                    Log.d(TAG, "Panic mode on");
+
+                }else{
+                    //Turn off panic mode
+                    panicMode = false;
+                    populateListView();
+
+                    //Change icon to off
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //If running Android Lollipop or higher, use getDrawable(int, theme)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black, null));
+                    }else{
+                        //If running lower than Android Lollipop, use getDrawable(int)
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black));
+                    }
+                    Log.d(TAG, "Panic mode off");
+                }
                 return true;
             }
         }
