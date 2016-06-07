@@ -2,9 +2,6 @@
     <string name="app_name">Smack Talker</string>
     <string name="sendButtonText">Send</string>
     <string name="messageEditTextHint">Enter message</string>
-    <string name="action_resetUserName">Reset username</string>
-    <string name="action_bluetooth">Bluetooth</string>
-    <string name="action_panic">Panic Button</string>
 
     <!--  BluetoothChat -->
     <string name="send">Send</string>
@@ -27,4 +24,7 @@
     <string name="secure_connect">Connect a device - Secure</string>
     <string name="insecure_connect">Connect a device - Insecure</string>
     <string name="discoverable">Make discoverable</string>
+    <string name="action_resetUserName">Reset username</string>
+    <string name="action_bluetooth">Bluetooth</string>
+    <string name="action_panic">Panic Button</string>
 </resources>

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    protected final static String DEBUGTAG = "DED";
+    /*protected final static String DEBUGTAG = "DED";
     private BluetoothAdapter btAdapter;
     private Button Bluetooth;
     protected static String userID;
@@ -707,5 +707,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return md;
-    }
+    }*/
 }

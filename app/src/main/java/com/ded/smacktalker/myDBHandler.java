@@ -26,6 +26,7 @@ public class myDBHandler extends SQLiteOpenHelper{
 
     protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME, COLUMN_IMGID};
 
+    private static final String TAG = "myDBHandler";
     public myDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
         //For housekeeping, passes information to the super class which does background stuff.
@@ -58,7 +59,7 @@ public class myDBHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
         //Call onCreate to make a new table.
         onCreate(db);
-        Log.d(MainActivity.DEBUGTAG, "Table Dropped");
+        Log.d(TAG, "Table Dropped");
     }
 
     public void createTable(String table){
@@ -99,7 +100,7 @@ public class myDBHandler extends SQLiteOpenHelper{
 
         //Inserts a new row in
         db.insert(table, null, values);
-        Log.d(MainActivity.DEBUGTAG, "Data passed into DB");
+        Log.d(TAG, "Data passed into DB");
 
         //Closes database, saves android some memory.
         db.close();

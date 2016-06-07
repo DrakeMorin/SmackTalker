@@ -90,6 +90,8 @@ public class BluetoothChatFragment extends Fragment {
     StringBuilder unread;
     //Will store whether the app is in the fore or background
     static boolean inBack = false;
+    //Will store if device is in panic mode
+    static boolean panicMode = false;
 
     /**
      * Name of the connected device
@@ -597,7 +599,7 @@ public class BluetoothChatFragment extends Fragment {
         myCursorAdapter = new SimpleCursorAdapter(getContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
 
-        if(MainActivity.panicMode){
+        if(panicMode){
             //Do not show messages; set adapter to null
             myListView.setAdapter(null);
             Log.d(TAG, "Still in panic mode!");
