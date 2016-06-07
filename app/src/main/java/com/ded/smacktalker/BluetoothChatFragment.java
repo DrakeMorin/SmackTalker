@@ -48,6 +48,7 @@ package com.ded.smacktalker;
         import java.io.ObjectOutput;
         import java.io.ObjectOutputStream;
         import java.security.SecureRandom;
+        import java.util.List;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
@@ -128,6 +129,7 @@ public class BluetoothChatFragment extends Fragment {
 
         //Since the last three parameters are constants of the class, null is passed.
         dbHandler = new myDBHandler(getContext(), null, null, 1);
+        prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         editor = prefs.edit();
         unread = new StringBuilder();
         rnd = new SecureRandom();
@@ -242,6 +244,7 @@ public class BluetoothChatFragment extends Fragment {
         newMessageText = (EditText) view.findViewById(R.id.newMessageText);
         mSendButton = (Button) view.findViewById(R.id.sendButton);
         testButton = (Button) view.findViewById(R.id.testButton);
+        myListView = (ListView) view.findViewById(R.id.listView);
     }
 
     /**
@@ -541,12 +544,12 @@ public class BluetoothChatFragment extends Fragment {
                 return true;
             }
 
-            case R.id.action_settings: {
+            case R.id.reset_userName: {
                 setUserID();
                 return true;
             }
 
-            case R.id.action_panic: {
+            case R.id.panic_button: {
                 if(!panicMode) {
                     //Turn on panic mode
                     panicMode = true;
@@ -628,7 +631,6 @@ public class BluetoothChatFragment extends Fragment {
 
     private void populateListView() {
         //Will only populate the myListView if panic mode is off.
-
         Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
         String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
