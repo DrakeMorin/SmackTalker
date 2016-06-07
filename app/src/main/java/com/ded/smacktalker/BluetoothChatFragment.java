@@ -6,11 +6,14 @@ package com.ded.smacktalker;
         import android.app.PendingIntent;
         import android.bluetooth.BluetoothAdapter;
         import android.bluetooth.BluetoothDevice;
+        import android.content.ClipData;
+        import android.content.ClipboardManager;
         import android.content.Context;
         import android.content.DialogInterface;
         import android.content.Intent;
         import android.content.SharedPreferences;
         import android.database.Cursor;
+        import android.database.sqlite.SQLiteCursor;
         import android.os.Bundle;
         import android.os.Handler;
         import android.os.Message;
@@ -28,6 +31,7 @@ package com.ded.smacktalker;
         import android.view.View;
         import android.view.ViewGroup;
         import android.view.inputmethod.EditorInfo;
+        import android.widget.AdapterView;
         import android.widget.ArrayAdapter;
         import android.widget.Button;
         import android.widget.EditText;
@@ -35,7 +39,6 @@ package com.ded.smacktalker;
         import android.widget.SimpleCursorAdapter;
         import android.widget.TextView;
         import android.widget.Toast;
-
         import java.io.ByteArrayInputStream;
         import java.io.ByteArrayOutputStream;
         import java.io.IOException;
@@ -119,7 +122,7 @@ public class BluetoothChatFragment extends Fragment {
         setHasOptionsMenu(true);
 
         //Since the last three parameters are constants of the class, null is passed.
-        dbHandler = new myDBHandler(MainActivity.this, null, null, 1);
+        dbHandler = new myDBHandler(getContext(), null, null, 1);
         editor = prefs.edit();
         unread = new StringBuilder();
         rnd = new SecureRandom();
@@ -242,10 +245,37 @@ public class BluetoothChatFragment extends Fragment {
     private void setupChat() {
         Log.d(TAG, "setupChat()");
 
-        // Initialize the array adapter for the conversation thread
+        /*// Initialize the array adapter for the conversation thread
         mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
 
-        myListView.setAdapter(mConversationArrayAdapter);
+        myListView.setAdapter(mConversationArrayAdapter);*/
+
+        myListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        //Get the string value of the view that was touched at position # (which is stored in position
+                        //This WILL enable copy to clipboard
+
+                        //Get cursor from myListView
+                        SQLiteCursor c  = (SQLiteCursor) parent.getItemAtPosition(position);
+                        //Move cursor position to the corresponding item touched
+                        c.moveToPosition(position);
+                        //Get the Message from the MESSAGETEXT column in the database
+                        String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGETEXT));
+
+                        //Save message to clipboard
+                        //Get handle for clipboard service
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        //Create text clip
+                        ClipData clip = ClipData.newPlainText(TAG, message);
+                        //Add text clip to clipboard
+                        clipboard.setPrimaryClip(clip);
+
+                        Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
 
         // Initialize the compose field with a listener for the return key
         newMessageText.setOnEditorActionListener(mWriteListener);
@@ -256,22 +286,24 @@ public class BluetoothChatFragment extends Fragment {
                 // Send a message using content of the edit text widget
                 View view = getView();
                 if (null != view) {
-                    //Only run if newMessageText is not empty
+                    if(!newMessageText.getText().toString().equals("")) {
+                        //Only run if newMessageText is not empty
 
-                    String message = newMessageText.getText().toString();
-                    //Add to database a new MessageData object with fields.
-                    dbHandler.addMessage(currentTable, new MessageData(message, userID));
+                        String message = newMessageText.getText().toString();
+                        //Add to database a new MessageData object with fields.
+                        dbHandler.addMessage(currentTable, new MessageData(message, userID));
 
-                    //Clear text field
-                    newMessageText.setText("");
+                        //Clear text field
+                        newMessageText.setText("");
 
-                    //Refresh myListView
-                    populateListView();
+                        //Refresh myListView
+                        populateListView();
 
-                    //Convert object to byte[]
-                    byte[] send = convertToBytes(new MessageData(message, userID));
+                        //Convert object to byte[]
+                        byte[] send = convertToBytes(new MessageData(message, userID));
 
-                    sendMessage(send);
+                        sendMessage(send);
+                    }
                 }
             }
         });
@@ -306,11 +338,7 @@ public class BluetoothChatFragment extends Fragment {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Check that there's actually something to send
-            // Get the message bytes and tell the BluetoothChatService to write
-            byte[] send = message.getBytes();
-            mChatService.write(send);
+            mChatService.write(bytes);
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
@@ -326,8 +354,20 @@ public class BluetoothChatFragment extends Fragment {
         public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
             // If the action is a key-up event on the return key, send the message
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                String message = view.getText().toString();
-                sendMessage(message);
+                String message = newMessageText.getText().toString();
+                //Add to database a new MessageData object with fields.
+                dbHandler.addMessage(currentTable, new MessageData(message, userID));
+
+                //Clear text field
+                newMessageText.setText("");
+
+                //Refresh myListView
+                populateListView();
+
+                //Convert object to byte[]
+                byte[] send = convertToBytes(new MessageData(message, userID));
+
+                sendMessage(send);
             }
             return true;
         }
@@ -378,8 +418,10 @@ public class BluetoothChatFragment extends Fragment {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
+                            //Connected to a device.
+                            onConversationStart();
+                            newMessageText.setText("");
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                            mConversationArrayAdapter.clear();
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             setStatus(R.string.title_connecting);
@@ -393,14 +435,16 @@ public class BluetoothChatFragment extends Fragment {
                 case Constants.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
+                    Log.d(TAG, "MESSAGE_WRITE RUNNING IN HANDLER");
+                    Log.d(TAG, "I THINK IT IS SENDING A MESSAGE?");
                     String writeMessage = new String(writeBuf);
                     mConversationArrayAdapter.add("Me:  " + writeMessage);
                     break;
                 case Constants.MESSAGE_READ:
+                    //When a message is received
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    onMessageReceived(readBuf);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -534,7 +578,7 @@ public class BluetoothChatFragment extends Fragment {
 
         //Refresh the list view
         populateListView();
-        Log.d(DEBUGTAG, "Message received");
+        Log.d(TAG, "Message received");
     }
 
     private void populateListView() {
@@ -550,19 +594,17 @@ public class BluetoothChatFragment extends Fragment {
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
         //Get the context, the defined layout being used, the cursor, the columns being read, the location of info being stored, 0
-        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
+        myCursorAdapter = new SimpleCursorAdapter(getContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
-        //Set myListView
-        myListView = (ListView) findViewById(R.id.listView);
 
-        if(panicMode){
+        if(MainActivity.panicMode){
             //Do not show messages; set adapter to null
             myListView.setAdapter(null);
-            Log.d(DEBUGTAG, "Still in panic mode!");
+            Log.d(TAG, "Still in panic mode!");
         }else {
             //Messages can be shown; set myListView adapter to the cursorAdapter
             myListView.setAdapter(myCursorAdapter);
-            Log.d(DEBUGTAG, "ListView refreshed");
+            Log.d(TAG, "ListView refreshed");
         }
     }
 
@@ -571,16 +613,16 @@ public class BluetoothChatFragment extends Fragment {
         //Change test serialization
         MessageData md = new MessageData(newMessageText.getText().toString(), userID);
         byte[] myBytes = convertToBytes(md);
-        Log.d(DEBUGTAG, "" + myBytes.length);
+        Log.d(TAG, "" + myBytes.length);
         MessageData test = convertFromBytes(myBytes);
-        Log.d(DEBUGTAG, test.toString());
+        Log.d(TAG, test.toString());
         dbHandler.addMessage(currentTable, test);
         populateListView();
     }
 
     private void createNotification(){
         //This will store and build the notification and its data
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
         //Set notification info
         mBuilder.setSmallIcon(R.drawable.logo_round);
         mBuilder.setContentTitle("SmackTalker: Unread Messages");
@@ -589,12 +631,12 @@ public class BluetoothChatFragment extends Fragment {
         mBuilder.setAutoCancel(true);
 
         //Creates intent, with the context from MainActivity.
-        Intent resultIntent = new Intent(MainActivity.this, MainActivity.class);
+        Intent resultIntent = new Intent(getContext(), MainActivity.class);
 
         //This PendingIntent opens the MainActivity class (for when notification is clicked)
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
-                        this,
+                        getContext(),
                         0,
                         resultIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT
@@ -603,7 +645,7 @@ public class BluetoothChatFragment extends Fragment {
         //Set the on notification click behaviour to PendingIntent
         mBuilder.setContentIntent(resultPendingIntent);
 
-        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotifyMgr = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
         //notificationID allows you to update the notification later on.
         //mBuilder.build() returns a Notification containing above specifications.
@@ -612,15 +654,15 @@ public class BluetoothChatFragment extends Fragment {
 
     private void deleteNotifications(){
         //Clear all notifications. This will run when the .onResume() is called.
-        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotifyMgr = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotifyMgr.cancelAll();
     }
 
     private void setUserID(){
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 
         //Create EditText to be used in dialog
-        final EditText userIDText = new EditText(this);
+        final EditText userIDText = new EditText(getContext());
 
         //Set dialog title
         //dialogBuilder.setTitle("Username");
@@ -634,7 +676,7 @@ public class BluetoothChatFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 userID = userIDText.getText().toString();
-                Toast.makeText(MainActivity.this, "UserID set", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "UserID set", Toast.LENGTH_SHORT).show();
 
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
@@ -656,7 +698,7 @@ public class BluetoothChatFragment extends Fragment {
                     sb.append(AB.charAt(rnd.nextInt(AB.length())));
                 }
                 userID = sb.toString();
-                Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "UserID randomized", Toast.LENGTH_SHORT).show();
 
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
