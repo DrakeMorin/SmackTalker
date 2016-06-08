@@ -1,76 +1,72 @@
 package com.ded.smacktalker;
 
-import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteCursor;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
-import android.widget.ViewAnimator;
+        import android.app.ActionBar;
+        import android.app.Activity;
+        import android.app.NotificationManager;
+        import android.app.PendingIntent;
+        import android.bluetooth.BluetoothAdapter;
+        import android.bluetooth.BluetoothDevice;
+        import android.content.ClipData;
+        import android.content.ClipboardManager;
+        import android.content.Context;
+        import android.content.DialogInterface;
+        import android.content.Intent;
+        import android.content.SharedPreferences;
+        import android.database.Cursor;
+        import android.database.sqlite.SQLiteCursor;
+        import android.os.Build;
+        import android.os.Bundle;
+        import android.os.Handler;
+        import android.os.Message;
+        import android.support.annotation.Nullable;
+        import android.support.v4.app.Fragment;
+        import android.support.v4.app.FragmentActivity;
+        import android.support.v7.app.AlertDialog;
+        import android.support.v7.app.NotificationCompat;
+        import android.util.Log;
+        import android.view.KeyEvent;
+        import android.view.LayoutInflater;
+        import android.view.Menu;
+        import android.view.MenuInflater;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.view.inputmethod.EditorInfo;
+        import android.widget.AdapterView;
+        import android.widget.Button;
+        import android.widget.EditText;
+        import android.widget.ListView;
+        import android.widget.SimpleCursorAdapter;
+        import android.widget.TextView;
+        import android.widget.Toast;
+        import java.io.ByteArrayInputStream;
+        import java.io.ByteArrayOutputStream;
+        import java.io.IOException;
+        import java.io.ObjectInput;
+        import java.io.ObjectInputStream;
+        import java.io.ObjectOutput;
+        import java.io.ObjectOutputStream;
+        import java.security.SecureRandom;
+        import java.util.List;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+/**
+ * This fragment controls Bluetooth to communicate with other devices.
+ */
+public class BluetoothChatFragment extends Fragment {
 
-public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "BluetoothChatFragment";
 
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    private static final int REQUEST_ENABLE_BT = 3;
 
-        public static final String TAG = "MainActivity";
+    // Layout Views
+    private ListView myListView;
+    private EditText newMessageText;
+    private Button mSendButton;
+    private Button testButton;
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-
-            if (savedInstanceState == null) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                BluetoothChatFragment fragment = new BluetoothChatFragment();
-                transaction.replace(R.id.sample_content_fragment, fragment);
-                transaction.commit();
-            }
-        }
-
-
-
-    /*protected final static String DEBUGTAG = "DED";
-    private BluetoothAdapter btAdapter;
-    private Button Bluetooth;
     protected static String userID;
     private static final String USERIDKEY = "userID";
     //This is a constant ID to track the device regardless of the set userID
@@ -80,15 +76,7 @@ public class MainActivity extends AppCompatActivity {
     //This String will store the deviceID of the other person in the conversation
     private static String oDeviceID;
 
-    //This bool will store if the panic mode has been activated
-    protected static boolean panicMode = false;
-
-    EditText newMessageText;
-    ListView myListView;
-    Menu menu;
     myDBHandler dbHandler;
-
-
     //This will store the name of the table for the current conversation.
     String currentTable = myDBHandler.TABLE_MESSAGES;
 
@@ -103,32 +91,44 @@ public class MainActivity extends AppCompatActivity {
     StringBuilder unread;
     //Will store whether the app is in the fore or background
     static boolean inBack = false;
+    //Will store if device is in panic mode
+    static boolean panicMode = false;
 
-    // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
-    private static final int REQUEST_ENABLE_BT = 3;
+    Menu menu;
 
+    /**
+     * Name of the connected device
+     */
     private String mConnectedDeviceName = null;
 
-    //String buffer for outgoing messages
+    /**
+     * Array adapter for the conversation thread
+     */
+    //private ArrayAdapter<String> mConversationArrayAdapter;
+
+    /**
+     * String buffer for outgoing messages
+     */
     private StringBuffer mOutStringBuffer;
-    //Local bluetooth adapter
+
+    /**
+     * Local Bluetooth adapter
+     */
     private BluetoothAdapter mBluetoothAdapter = null;
-    //Member object for the class services
+
+    /**
+     * Member object for the chat services
+     */
     private BluetoothChatService mChatService = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setHasOptionsMenu(true);
 
         //Since the last three parameters are constants of the class, null is passed.
-        dbHandler = new myDBHandler(this, null, null, 1);
-
-        //Variable instantiation
-        newMessageText = (EditText) findViewById(R.id.newMessageText);
-        prefs = getPreferences(MODE_PRIVATE);
+        dbHandler = new myDBHandler(getContext(), null, null, 1);
+        prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         editor = prefs.edit();
         unread = new StringBuilder();
         rnd = new SecureRandom();
@@ -162,59 +162,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        myListView = (ListView) findViewById(R.id.listView);
-        //Add item onClickListener
-        myListView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //Get the string value of the view that was touched at position # (which is stored in position
-                        //This WILL enable copy to clipboard
 
-                        //Get cursor from myListView
-                        SQLiteCursor c  = (SQLiteCursor) parent.getItemAtPosition(position);
-                        //Move cursor position to the corresponding item touched
-                        c.moveToPosition(position);
-                        //Get the Message from the MESSAGETEXT column in the database
-                        String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGETEXT));
-
-                        //Save message to clipboard
-                        //Get handle for clipboard service
-                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                        //Create text clip
-                        ClipData clip = ClipData.newPlainText(DEBUGTAG, message);
-                        //Add text clip to clipboard
-                        clipboard.setPrimaryClip(clip);
-
-                        Toast.makeText(MainActivity.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        //Populate myListView with previous messages
-        populateListView();
-
-        //BLUETOOTH STUFF
-        //Instantiate mChatService
-        mChatService = new BluetoothChatService(MainActivity.this, mHandler);
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-            FragmentActivity activity = MainActivity.this;
+            FragmentActivity activity = getActivity();
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
-
-        Bundle myBundle = getIntent().getExtras();
-        if(myBundle != null){
-            //Only runs if there is data in the bundle.
-            String address = myBundle.getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-            Log.d(DEBUGTAG, "Address received: " + address);
-            connectDevice(true, address);
-        }
     }
+
 
     @Override
     public void onStart() {
@@ -239,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         //When the app is resumed from background, assume all messages are read.
@@ -252,31 +211,122 @@ public class MainActivity extends AppCompatActivity {
         //Clear any unread message notifications
         deleteNotifications();
 
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
         if (mChatService != null) {
-// Only if the state is STATE_NONE, do we know that we haven't started already
+            // Only if the state is STATE_NONE, do we know that we haven't started already
             if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
                 // Start the Bluetooth chat services
                 mChatService.start();
             }
         }
+        populateListView();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         //Set bool saying app is running in background
         inBack = true;
     }
 
-    //Set up the UI and background operations for chat.
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_bluetooth_chat, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        myListView = (ListView) view.findViewById(R.id.listView);
+        newMessageText = (EditText) view.findViewById(R.id.newMessageText);
+        mSendButton = (Button) view.findViewById(R.id.sendButton);
+        testButton = (Button) view.findViewById(R.id.testButton);
+        Log.d(TAG, "Views created");
+    }
+
+    /**
+     * Set up the UI and background operations for chat.
+     */
     private void setupChat() {
+        Log.d(TAG, "setupChat()");
+
+        /*// Initialize the array adapter for the conversation thread
+        mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
+
+        myListView.setAdapter(mConversationArrayAdapter);*/
+
+        myListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        //Get the string value of the view that was touched at position # (which is stored in position
+                        //This WILL enable copy to clipboard
+
+                        //Get cursor from myListView
+                        SQLiteCursor c  = (SQLiteCursor) parent.getItemAtPosition(position);
+                        //Move cursor position to the corresponding item touched
+                        c.moveToPosition(position);
+                        //Get the Message from the MESSAGETEXT column in the database
+                        String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGETEXT));
+
+                        //Save message to clipboard
+                        //Get handle for clipboard service
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        //Create text clip
+                        ClipData clip = ClipData.newPlainText(TAG, message);
+                        //Add text clip to clipboard
+                        clipboard.setPrimaryClip(clip);
+
+                        Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Initialize the compose field with a listener for the return key
+        newMessageText.setOnEditorActionListener(mWriteListener);
+
+        // Initialize the send button with a listener that for click events
+        mSendButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Send a message using content of the edit text widget
+                View view = getView();
+                if (null != view) {
+                    if(!newMessageText.getText().toString().equals("")) {
+                        //Only run if newMessageText is not empty
+
+                        String message = newMessageText.getText().toString();
+                        //Add to database a new MessageData object with fields.
+                        dbHandler.addMessage(currentTable, new MessageData(message, userID));
+
+                        //Clear text field
+                        newMessageText.setText("");
+
+                        //Refresh myListView
+                        populateListView();
+
+                        //Convert object to byte[]
+                        byte[] send = convertToBytes(new MessageData(message, userID));
+
+                        sendMessage(send);
+                    }else {
+                        Toast.makeText(getContext(), "No message to send", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
         // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BluetoothChatService(MainActivity.this, mHandler);
+        mChatService = new BluetoothChatService(getActivity(), mHandler);
+
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
     }
 
-    //Makes this device discoverable.
+    /**
+     * Makes this device discoverable.
+     */
     private void ensureDiscoverable() {
         if (mBluetoothAdapter.getScanMode() !=
                 BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
@@ -286,10 +336,97 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //The Handler that gets information back from the BluetoothChatService
+    /**
+     * Sends a message.
+     *
+     * @param bytes The byte array to be sent
+     */
+    private void sendMessage(byte[] bytes) {
+        // Check that we're actually connected before trying anything
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+            mChatService.write(bytes);
+
+            // Reset out string buffer to zero and clear the edit text field
+            mOutStringBuffer.setLength(0);
+            newMessageText.setText(mOutStringBuffer);
+
+    }
+
+    /**
+     * The action listener for the EditText widget, to listen for the return key
+     */
+    private TextView.OnEditorActionListener mWriteListener
+            = new TextView.OnEditorActionListener() {
+        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+            // If the action is a key-up event on the return key, send the message
+            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
+                if(!newMessageText.getText().toString().equals("")) {
+                    String message = newMessageText.getText().toString();
+                    //Add to database a new MessageData object with fields.
+                    dbHandler.addMessage(currentTable, new MessageData(message, userID));
+
+                    //Clear text field
+                    newMessageText.setText("");
+
+                    //Refresh myListView
+                    populateListView();
+
+                    //Convert object to byte[]
+                    byte[] send = convertToBytes(new MessageData(message, userID));
+
+                    sendMessage(send);
+                }else {
+                    Toast.makeText(getContext(), "No message to send", Toast.LENGTH_SHORT).show();
+                }
+            }
+            return true;
+        }
+    };
+
+    /**
+     * Updates the status on the action bar.
+     *
+     * @param resId a string resource ID
+     */
+    private void setStatus(int resId) {
+        FragmentActivity activity = getActivity();
+        if (null == activity) {
+            return;
+        }
+        final ActionBar actionBar = activity.getActionBar();
+        if (null == actionBar) {
+            return;
+        }
+        actionBar.setSubtitle(resId);
+    }
+
+    /**
+     * Updates the status on the action bar.
+     *
+     * @param subTitle status
+     */
+    private void setStatus(CharSequence subTitle) {
+        FragmentActivity activity = getActivity();
+        if (null == activity) {
+            return;
+        }
+        final ActionBar actionBar = activity.getActionBar();
+        if (null == actionBar) {
+            return;
+        }
+        actionBar.setSubtitle(subTitle);
+    }
+
+    /**
+     * The Handler that gets information back from the BluetoothChatService
+     */
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            FragmentActivity activity = getActivity();
             switch (msg.what) {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
@@ -297,33 +434,41 @@ public class MainActivity extends AppCompatActivity {
                             //Connected to a device.
                             onConversationStart();
                             newMessageText.setText("");
+                            setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
+                            setStatus(R.string.title_connecting);
                             break;
                         case BluetoothChatService.STATE_LISTEN:
-                            break;
                         case BluetoothChatService.STATE_NONE:
+                            setStatus(R.string.title_not_connected);
                             break;
                     }
+                    break;
+                case Constants.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    Log.d(TAG, "MESSAGE_WRITE RUNNING IN HANDLER");
+                    Log.d(TAG, "I THINK IT IS SENDING A MESSAGE?");
+                    String writeMessage = new String(writeBuf);
                     break;
                 case Constants.MESSAGE_READ:
                     //When a message is received
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
                     onMessageReceived(readBuf);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
-                    if (null != MainActivity.this) {
-                        Toast.makeText(MainActivity.this, "Connected to "
+                    if (null != activity) {
+                        Toast.makeText(activity, "Connected to "
                                 + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case Constants.MESSAGE_TOAST:
-                    if (null != MainActivity.this) {
-                        Toast.makeText(MainActivity.this, msg.getData().getString(Constants.TOAST),
+                    if (null != activity) {
+                        Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
                                 Toast.LENGTH_SHORT).show();
                     }
                     break;
@@ -331,60 +476,84 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public void onActivityResult(int requestCode, int resultCode, String address) {
-        Log.d(DEBUGTAG, "onActivityResult started!!!!");
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(true, address);
+                    connectDevice(data, true);
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(false, address);
+                    connectDevice(data, false);
                 }
                 break;
+            case REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK) {
+                    // Bluetooth is now enabled, so set up a chat session
+                    setupChat();
+                } else {
+                    // User did not enable Bluetooth or an error occurred
+                    Log.d(TAG, "BT not enabled");
+                    Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
+                            Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
         }
     }
 
-    //Establish connection with other device
-    private void connectDevice(boolean secure, String address) {
-        Log.d(DEBUGTAG, "CONNECTDEVICE STARTED!?");
-        Log.d(DEBUGTAG, "Connect: " + address);
+    /**
+     * Establish connection with other divice
+     *
+     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     * @param secure Socket Security type - Secure (true) , Insecure (false)
+     */
+    private void connectDevice(Intent data, boolean secure) {
+        // Get the device MAC address
+        String address = data.getExtras()
+                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        Log.d(DEBUGTAG, "Bluetooth Device created");
         // Attempt to connect to the device
         mChatService.connect(device, secure);
     }
 
-    //INFLATES ACTION BAR
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.bluetooth_chat, menu);
         this.menu = menu;
-        Log.d(DEBUGTAG, "Options Menu Inflated");
-        return true;
     }
 
-    //Check for if any of the action bar items are clicked
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.action_bluetooth:
-                Log.d(DEBUGTAG, "Bluetooth button pressed");
-                btButtonClick();
+        switch (item.getItemId()) {
+            case R.id.secure_connect_scan: {
+                // Launch the DeviceListActivity to see devices and do scan
+                Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
                 return true;
+            }
+            case R.id.insecure_connect_scan: {
+                // Launch the DeviceListActivity to see devices and do scan
+                Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+                return true;
+            }
+            case R.id.discoverable: {
+                // Ensure this device is discoverable by others
+                ensureDiscoverable();
+                return true;
+            }
 
-            case R.id.action_settings:
-                //User clicked on the settings
+            case R.id.reset_userName: {
                 setUserID();
                 return true;
+            }
 
-            case R.id.action_panic:
+            case R.id.panic_button: {
                 if(!panicMode) {
                     //Turn on panic mode
                     panicMode = true;
@@ -393,12 +562,12 @@ public class MainActivity extends AppCompatActivity {
                     //Change icon to on
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         //If running Android Lollipop or higher, use getDrawable(int, theme)
-                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white, getTheme()));
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white, null));
                     }else{
                         //If running lower than Android Lollipop, use getDrawable(int)
                         menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_white));
                     }
-                    Log.d(DEBUGTAG, "Panic mode on");
+                    Log.d(TAG, "Panic mode on");
 
                 }else{
                     //Turn off panic mode
@@ -408,49 +577,17 @@ public class MainActivity extends AppCompatActivity {
                     //Change icon to off
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         //If running Android Lollipop or higher, use getDrawable(int, theme)
-                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black, getTheme()));
+                        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black, null));
                     }else{
                         //If running lower than Android Lollipop, use getDrawable(int)
                         menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.panic_icon_black));
                     }
-                    Log.d(DEBUGTAG, "Panic mode off");
+                    Log.d(TAG, "Panic mode off");
                 }
                 return true;
-
-            default:
-                //User's action unrecognized, use super class to handle it
-                return super.onOptionsItemSelected(item);
+            }
         }
-    }
-
-    //What happens if btButton is clicked;
-    public void btButtonClick() {
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        //The bluetooth is already on, so show DeviceList
-        if(btAdapter.isEnabled()){
-            Intent i = new Intent(MainActivity.this,  DeviceListActivity.class);
-            startActivity(i);
-            Log.d(DEBUGTAG, "Opening Device List");
-        }
-
-        //Bluetooth is not on, turn it on
-        else{
-
-            //Sends request to the device to turn on bluetooth radio
-            String actionStateChanged = BluetoothAdapter.ACTION_STATE_CHANGED;
-            String actionRequestEnable = BluetoothAdapter.ACTION_REQUEST_ENABLE;
-            IntentFilter Filter = new IntentFilter(actionStateChanged);
-            startActivityForResult(new Intent(actionRequestEnable), 0);
-            Log.d(DEBUGTAG, "turned on bluetooth");
-
-            Intent i = new Intent(MainActivity.this,  DeviceListActivity.class);
-            startActivity(i);
-            //Saves information from bluetooth connection, don't know if this will actually be used yet
-            String address = btAdapter.getAddress();
-            String name = btAdapter.getName();
-            String statusText = name + ":" + address;
-        }
+        return false;
     }
 
     protected void onConversationStart(){
@@ -466,53 +603,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Update myListView
         populateListView();
-        Log.d(DEBUGTAG, "New conversation initialized");
+        Log.d(TAG, "New conversation initialized");
     }
-
-    //Message is ready to be sent.
-    public void sendButtonClicked(View view) {
-        boolean btCondition = true;
-        try{
-            btCondition = mChatService.getState() != BluetoothChatService.STATE_CONNECTED;
-        }catch (Exception e){
-            //Bluetooth state not initialized; user likely dismissed dialog box without hitting Yes/No
-            Log.d(DEBUGTAG, "btCondition failed to set");
-        }
-        // Check that we're actually connected before trying anything
-        if (btCondition) {
-            Toast.makeText(MainActivity.this, "Not connected", Toast.LENGTH_SHORT).show();
-        }else {
-            if (!newMessageText.getText().toString().equals("")) {
-                //Only run if newMessageText is not empty
-
-                String message = newMessageText.getText().toString();
-                //Add to database a new MessageData object with fields.
-                dbHandler.addMessage(currentTable, new MessageData(message, userID));
-
-                //Clear text field
-                newMessageText.setText("");
-
-                //Refresh myListView
-                populateListView();
-
-                //Convert object to byte[]
-                byte[] send = convertToBytes(new MessageData(message, userID));
-
-
-                //Have BluetoothChatService write object
-                mChatService.write(send);
-
-                // Reset out string buffer to zero and clear the edit text field
-                mOutStringBuffer.setLength(0);
-                Log.d(DEBUGTAG, "Message sent");
-
-            } else {
-                Toast.makeText(MainActivity.this, "No message to send", Toast.LENGTH_SHORT).show();
-                Log.d(DEBUGTAG, "Message field empty");
-            }
-        }
-    }
-
     protected void onMessageReceived(byte[] bytes){
         //This method is to be called when a bluetooth message is received
 
@@ -538,12 +630,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Refresh the list view
         populateListView();
-        Log.d(DEBUGTAG, "Message received");
+        Log.d(TAG, "Message received");
     }
 
     private void populateListView() {
         //Will only populate the myListView if panic mode is off.
-
         Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
         String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
@@ -554,37 +645,34 @@ public class MainActivity extends AppCompatActivity {
         //Define cursorAdapter, instantiated next line.
         SimpleCursorAdapter myCursorAdapter;
         //Get the context, the defined layout being used, the cursor, the columns being read, the location of info being stored, 0
-        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
-
-        //Set myListView
-        myListView = (ListView) findViewById(R.id.listView);
+        myCursorAdapter = new SimpleCursorAdapter(getContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
         if(panicMode){
             //Do not show messages; set adapter to null
             myListView.setAdapter(null);
-            Log.d(DEBUGTAG, "Still in panic mode!");
+            Log.d(TAG, "Still in panic mode!");
         }else {
             //Messages can be shown; set myListView adapter to the cursorAdapter
             myListView.setAdapter(myCursorAdapter);
-            Log.d(DEBUGTAG, "ListView refreshed");
+            Log.d(TAG, "ListView refreshed");
         }
     }
 
     //For testing purposes.
     public void testButtonClicked(View view){
         //Change test serialization
-         MessageData md = new MessageData(newMessageText.getText().toString(), userID);
+        MessageData md = new MessageData(newMessageText.getText().toString(), userID);
         byte[] myBytes = convertToBytes(md);
-        Log.d(DEBUGTAG, "" + myBytes.length);
+        Log.d(TAG, "" + myBytes.length);
         MessageData test = convertFromBytes(myBytes);
-        Log.d(DEBUGTAG, test.toString());
+        Log.d(TAG, test.toString());
         dbHandler.addMessage(currentTable, test);
         populateListView();
     }
 
     private void createNotification(){
         //This will store and build the notification and its data
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
         //Set notification info
         mBuilder.setSmallIcon(R.drawable.logo_round);
         mBuilder.setContentTitle("SmackTalker: Unread Messages");
@@ -593,12 +681,12 @@ public class MainActivity extends AppCompatActivity {
         mBuilder.setAutoCancel(true);
 
         //Creates intent, with the context from MainActivity.
-        Intent resultIntent = new Intent(MainActivity.this, MainActivity.class);
+        Intent resultIntent = new Intent(getContext(), MainActivity.class);
 
         //This PendingIntent opens the MainActivity class (for when notification is clicked)
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
-                        this,
+                        getContext(),
                         0,
                         resultIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT
@@ -607,7 +695,7 @@ public class MainActivity extends AppCompatActivity {
         //Set the on notification click behaviour to PendingIntent
         mBuilder.setContentIntent(resultPendingIntent);
 
-        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotifyMgr = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
         //notificationID allows you to update the notification later on.
         //mBuilder.build() returns a Notification containing above specifications.
@@ -616,15 +704,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void deleteNotifications(){
         //Clear all notifications. This will run when the .onResume() is called.
-        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotifyMgr = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotifyMgr.cancelAll();
     }
 
     private void setUserID(){
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 
         //Create EditText to be used in dialog
-        final EditText userIDText = new EditText(this);
+        final EditText userIDText = new EditText(getContext());
 
         //Set dialog title
         //dialogBuilder.setTitle("Username");
@@ -638,7 +726,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 userID = userIDText.getText().toString();
-                Toast.makeText(MainActivity.this, "UserID set", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "UserID set", Toast.LENGTH_SHORT).show();
 
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
@@ -660,7 +748,7 @@ public class MainActivity extends AppCompatActivity {
                     sb.append(AB.charAt(rnd.nextInt(AB.length())));
                 }
                 userID = sb.toString();
-                Toast.makeText(MainActivity.this, "UserID randomized", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "UserID randomized", Toast.LENGTH_SHORT).show();
 
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
@@ -726,5 +814,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return md;
-    }*/
+    }
+
 }
+
