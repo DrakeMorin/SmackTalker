@@ -19,7 +19,7 @@ FEATURES:
 -All messages stored in mySQL database, each conversation in its own table
 -Image support for all possible device screen resolutions
 -Dialog for setting userID, optional randomization
--Storing IDs in Device SharedPrefernces which are constant across runtime sessions
+-Storing IDs in Device SharedPreferences which are constant across runtime sessions
 -Ability to reset userID on demand
 -Tracking messages received that have not been read
 -Creation of notifications that when clicked, return you to the app
