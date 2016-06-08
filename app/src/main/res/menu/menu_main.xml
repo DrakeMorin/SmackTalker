@@ -2,16 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
+    <!--
     <item
         android:id="@+id/action_bluetooth"
         android:icon="@drawable/bluetooth_icon"
         android:title="@string/action_bluetooth"
         app:showAsAction="ifRoom"
-        />
+        />-->
     <!--
         If you add any other icons, or change their order, you must go into
         MainActivity.onOptionsItemSelected and change the id used for the panic button icon change.
     -->
+    <!--
     <item
         android:id="@+id/panic_button"
         android:icon="@drawable/panic_icon_black"
@@ -21,6 +23,6 @@
 
     <item android:id="@+id/reset_userName"
         android:title="@string/action_resetUserName"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/>-->
 
 </menu>

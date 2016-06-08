@@ -33,7 +33,6 @@ package com.ded.smacktalker;
         import android.view.ViewGroup;
         import android.view.inputmethod.EditorInfo;
         import android.widget.AdapterView;
-        import android.widget.ArrayAdapter;
         import android.widget.Button;
         import android.widget.EditText;
         import android.widget.ListView;
@@ -105,7 +104,7 @@ public class BluetoothChatFragment extends Fragment {
     /**
      * Array adapter for the conversation thread
      */
-    private ArrayAdapter<String> mConversationArrayAdapter;
+    //private ArrayAdapter<String> mConversationArrayAdapter;
 
     /**
      * String buffer for outgoing messages
@@ -452,7 +451,6 @@ public class BluetoothChatFragment extends Fragment {
                     Log.d(TAG, "MESSAGE_WRITE RUNNING IN HANDLER");
                     Log.d(TAG, "I THINK IT IS SENDING A MESSAGE?");
                     String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
                     break;
                 case Constants.MESSAGE_READ:
                     //When a message is received
@@ -654,7 +652,6 @@ public class BluetoothChatFragment extends Fragment {
             myListView.setAdapter(null);
             Log.d(TAG, "Still in panic mode!");
         }else {
-            Log.d(TAG, "Crash incoming!! See populateListView: myListView.setAdapter(myCursorAdapter)");
             //Messages can be shown; set myListView adapter to the cursorAdapter
             myListView.setAdapter(myCursorAdapter);
             Log.d(TAG, "ListView refreshed");
