@@ -65,7 +65,6 @@ public class BluetoothChatFragment extends Fragment {
     private ListView myListView;
     private EditText newMessageText;
     private Button mSendButton;
-    private Button testButton;
 
     protected static String userID;
     private static final String USERIDKEY = "userID";
@@ -248,7 +247,6 @@ public class BluetoothChatFragment extends Fragment {
         myListView = (ListView) view.findViewById(R.id.listView);
         newMessageText = (EditText) view.findViewById(R.id.newMessageText);
         mSendButton = (Button) view.findViewById(R.id.sendButton);
-        testButton = (Button) view.findViewById(R.id.testButton);
         Log.d(TAG, "Views created");
     }
 
@@ -667,18 +665,6 @@ public class BluetoothChatFragment extends Fragment {
             myListView.setAdapter(myCursorAdapter);
             Log.d(TAG, "ListView refreshed");
         }
-    }
-
-    //For testing purposes.
-    public void testButtonClicked(View view){
-        //Change test serialization
-        MessageData md = new MessageData(newMessageText.getText().toString(), userID);
-        byte[] myBytes = convertToBytes(md);
-        Log.d(TAG, "" + myBytes.length);
-        MessageData test = convertFromBytes(myBytes);
-        Log.d(TAG, test.toString());
-        dbHandler.addMessage(currentTable, test);
-        populateListView();
     }
 
     private void createNotification(){
