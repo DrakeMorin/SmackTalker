@@ -96,6 +96,10 @@ public class BluetoothChatFragment extends Fragment {
 
     Menu menu;
 
+    String instructions = "1. Click ensure discoverable in the options. Both devices must do this. " +
+            "\n2. Click connect device and select the person you wish to connect to. " +
+            "\n3. Wait to connect, send messages and have fun!";
+
     /**
      * Name of the connected device
      */
@@ -172,6 +176,8 @@ public class BluetoothChatFragment extends Fragment {
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
+
+        showHelp();
     }
 
 
@@ -532,6 +538,7 @@ public class BluetoothChatFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.help_button: {
                 //Show help screen!
+                showHelp();
                 return true;
             }
             case R.id.secure_connect_scan: {
@@ -818,6 +825,34 @@ public class BluetoothChatFragment extends Fragment {
             }
         }
         return md;
+    }
+
+    private void showHelp(){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+
+        //Create TextView to be used in dialog
+        final TextView textView = new TextView(getContext());
+        textView.setText(instructions);
+        textView.setPadding(25,25,25,25);
+
+        //Set dialog title
+        dialogBuilder.setTitle("Instructions");
+        //Set dialog message
+        //dialogBuilder.setMessage(instructions);
+        //Add edit text to dialog
+        dialogBuilder.setView(textView);
+
+        //Dismiss help
+        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                }
+        });
+
+        //Create the dialog
+        AlertDialog aDialog = dialogBuilder.create();
+        //Show the dialog
+        aDialog.show();
     }
 
 }
