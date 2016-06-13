@@ -65,7 +65,6 @@ public class BluetoothChatFragment extends Fragment {
     private ListView myListView;
     private EditText newMessageText;
     private Button mSendButton;
-    private Button testButton;
 
     protected static String userID;
     private static final String USERIDKEY = "userID";
@@ -95,6 +94,10 @@ public class BluetoothChatFragment extends Fragment {
     static boolean panicMode = false;
 
     Menu menu;
+
+    String instructions = "1. Click ensure discoverable in the options. Both devices must do this. " +
+            "\n2. Click connect device and select the person you wish to connect to. " +
+            "\n3. Wait to connect, send messages and have fun!";
 
     /**
      * Name of the connected device
@@ -172,6 +175,8 @@ public class BluetoothChatFragment extends Fragment {
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
+
+        showHelp();
     }
 
 
@@ -242,7 +247,6 @@ public class BluetoothChatFragment extends Fragment {
         myListView = (ListView) view.findViewById(R.id.listView);
         newMessageText = (EditText) view.findViewById(R.id.newMessageText);
         mSendButton = (Button) view.findViewById(R.id.sendButton);
-        testButton = (Button) view.findViewById(R.id.testButton);
         Log.d(TAG, "Views created");
     }
 
@@ -530,6 +534,11 @@ public class BluetoothChatFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.help_button: {
+                //Show help screen!
+                showHelp();
+                return true;
+            }
             case R.id.secure_connect_scan: {
                 // Launch the DeviceListActivity to see devices and do scan
                 Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
@@ -656,18 +665,6 @@ public class BluetoothChatFragment extends Fragment {
             myListView.setAdapter(myCursorAdapter);
             Log.d(TAG, "ListView refreshed");
         }
-    }
-
-    //For testing purposes.
-    public void testButtonClicked(View view){
-        //Change test serialization
-        MessageData md = new MessageData(newMessageText.getText().toString(), userID);
-        byte[] myBytes = convertToBytes(md);
-        Log.d(TAG, "" + myBytes.length);
-        MessageData test = convertFromBytes(myBytes);
-        Log.d(TAG, test.toString());
-        dbHandler.addMessage(currentTable, test);
-        populateListView();
     }
 
     private void createNotification(){
@@ -814,6 +811,34 @@ public class BluetoothChatFragment extends Fragment {
             }
         }
         return md;
+    }
+
+    private void showHelp(){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+
+        //Create TextView to be used in dialog
+        final TextView textView = new TextView(getContext());
+        textView.setText(instructions);
+        textView.setPadding(25,25,25,25);
+
+        //Set dialog title
+        dialogBuilder.setTitle("Instructions");
+        //Set dialog message
+        //dialogBuilder.setMessage(instructions);
+        //Add edit text to dialog
+        dialogBuilder.setView(textView);
+
+        //Dismiss help
+        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                }
+        });
+
+        //Create the dialog
+        AlertDialog aDialog = dialogBuilder.create();
+        //Show the dialog
+        aDialog.show();
     }
 
 }

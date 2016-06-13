@@ -27,4 +27,5 @@
     <string name="action_resetUserName">Reset username</string>
     <string name="action_bluetooth">Bluetooth</string>
     <string name="action_panic">Panic Button</string>
+    <string name="action_help">Help</string>
 </resources>

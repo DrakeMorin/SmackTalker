@@ -15,13 +15,25 @@ Note that many commits from April 11 - 13 were attempted fixes at resolving miss
 
 FEATURES:
 -Send and receive messages each containing message, senderID, and time stamp
+
 -Sender image is extrapolated based on the first char of the senderID for a given message
+
+-Bluetooth connections, both secure and insecure types
+
 -All messages stored in mySQL database, each conversation in its own table
+
 -Image support for all possible device screen resolutions
+
 -Dialog for setting userID, optional randomization
--Storing IDs in Device SharedPreferences which are constant across runtime sessions
+
+-Storing IDs in Device SharedPrefernces which are constant across runtime sessions
+
 -Ability to reset userID on demand
+
 -Tracking messages received that have not been read
+
 -Creation of notifications that when clicked, return you to the app
+
 -Panic mode which will hide all messages from screen
--Our very own unique logo
+
+-Our very own unique logo and colour scheme
