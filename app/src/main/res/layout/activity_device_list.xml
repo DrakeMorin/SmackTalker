@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
+        android:paddingStart="5dp"
         android:paddingLeft="5dp"
         android:text="@string/title_paired_devices"
         android:textColor="#000000"
