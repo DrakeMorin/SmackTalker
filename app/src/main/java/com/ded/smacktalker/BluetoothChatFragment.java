@@ -2,6 +2,8 @@ package com.ded.smacktalker;
 
         import android.app.ActionBar;
         import android.app.Activity;
+        import android.app.AlertDialog;
+        import android.app.Fragment;
         import android.app.NotificationManager;
         import android.app.PendingIntent;
         import android.bluetooth.BluetoothAdapter;
@@ -19,10 +21,6 @@ package com.ded.smacktalker;
         import android.os.Handler;
         import android.os.Message;
         import android.support.annotation.Nullable;
-        import android.support.v4.app.Fragment;
-        import android.support.v4.app.FragmentActivity;
-        import android.support.v7.app.AlertDialog;
-        import android.support.v7.app.NotificationCompat;
         import android.util.Log;
         import android.view.KeyEvent;
         import android.view.LayoutInflater;
@@ -70,7 +68,7 @@ public class BluetoothChatFragment extends Fragment {
     private static final String DEVICEKEY = "deviceID";
 
     //This String will store the deviceID of the other person in the conversation
-    private static String oDeviceID;
+    private static String DeviceID;
 
     myDBHandler dbHandler;
     //This will store the name of the table for the current conversation.
@@ -168,7 +166,7 @@ public class BluetoothChatFragment extends Fragment {
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-            FragmentActivity activity = getActivity();
+            Activity activity = getActivity();
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
@@ -845,5 +843,7 @@ public class BluetoothChatFragment extends Fragment {
         aDialog.show();
     }
 
+    private class FragmentActivity {
+    }
 }
 
