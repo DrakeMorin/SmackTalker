@@ -346,8 +346,15 @@ public class BluetoothChatFragment extends Fragment {
      * @param bytes The byte array to be sent
      */
     private void sendMessage(byte[] bytes) {
+        boolean condition = false;
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+        try{
+            condition = mChatService.getState() != BluetoothChatService.STATE_CONNECTED;
+        }catch (NullPointerException e){
+            Toast.makeText(getContext(), "Error: please try again", Toast.LENGTH_SHORT).show();
+            setupChat();
+        }
+        if (condition) {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
