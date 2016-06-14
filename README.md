@@ -26,7 +26,7 @@ FEATURES:
 
 -Dialog for setting userID, optional randomization
 
--Storing IDs in Device SharedPrefernces which are constant across runtime sessions
+-Storing IDs in Device SharedPreferences which are constant across runtime sessions
 
 -Ability to reset userID on demand
 

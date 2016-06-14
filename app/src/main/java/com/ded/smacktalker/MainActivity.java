@@ -1,9 +1,7 @@
 package com.ded.smacktalker;
 
-import android.app.Activity;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
+import android.app.PendingIntent;import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.ClipData;
