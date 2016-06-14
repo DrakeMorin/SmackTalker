@@ -64,6 +64,7 @@ public class BluetoothChatFragment extends Fragment {
     private Button mSendButton;
 
     protected static String userID;
+    protected static String deviceID;
     private static final String USERIDKEY = "userID";
     private static final String DEVICEKEY = "deviceID";
 
@@ -90,9 +91,6 @@ public class BluetoothChatFragment extends Fragment {
 
     Menu menu;
 
-    String instructions = "1. Click ensure discoverable in the options. Both devices must do this. " +
-            "\n2. Click connect device and select the person you wish to connect to. " +
-            "\n3. Wait to connect, send messages and have fun!";
 
     /**
      * Name of the connected device
@@ -132,7 +130,7 @@ public class BluetoothChatFragment extends Fragment {
         rnd = new SecureRandom();
 
         //Get deviceID from preferences
-        String deviceID = prefs.getString(DEVICEKEY, null);
+        deviceID = prefs.getString(DEVICEKEY, null);
 
         if(deviceID == null){
             //One in 57 billion chance of two users having the same deviceID with this method
@@ -607,7 +605,7 @@ public class BluetoothChatFragment extends Fragment {
 
         //Set the name that will reference corresponding database table.
         //Replace all removes all spaces from the string and replaces them with nothing.
-        currentTable = (userID + mConnectedDeviceName).replaceAll("\\s", "");
+        currentTable = (deviceID + mConnectedDeviceName).replaceAll("\\s", "");
 
         //This method checks if a table already exists, otherwise it creates one.
         dbHandler.createTable(currentTable);
