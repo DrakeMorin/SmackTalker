@@ -172,7 +172,7 @@ public class BluetoothChatFragment extends Fragment {
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             FragmentActivity activity = getActivity();
-            Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity,R.string.bt_unavailable, Toast.LENGTH_LONG).show();
             activity.finish();
         }
 
@@ -283,7 +283,7 @@ public class BluetoothChatFragment extends Fragment {
                         //Add text clip to clipboard
                         clipboard.setPrimaryClip(clip);
 
-                        Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.clipboard_copy, Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -315,7 +315,7 @@ public class BluetoothChatFragment extends Fragment {
 
                         sendMessage(send);
                     }else {
-                        Toast.makeText(getContext(), "No message to send", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.editText_empty, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -351,7 +351,7 @@ public class BluetoothChatFragment extends Fragment {
         try{
             condition = mChatService.getState() != BluetoothChatService.STATE_CONNECTED;
         }catch (NullPointerException e){
-            Toast.makeText(getContext(), "Error: please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.error_try_again, Toast.LENGTH_SHORT).show();
             setupChat();
         }
         if (condition) {
@@ -390,7 +390,7 @@ public class BluetoothChatFragment extends Fragment {
 
                     sendMessage(send);
                 }else {
-                    Toast.makeText(getContext(), "No message to send", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.editText_empty, Toast.LENGTH_SHORT).show();
                 }
             }
             return true;
@@ -721,16 +721,16 @@ public class BluetoothChatFragment extends Fragment {
         //Set dialog title
         //dialogBuilder.setTitle("Username");
         //Set dialog message
-        dialogBuilder.setMessage("Please enter your username");
+        dialogBuilder.setMessage(R.string.username_dialog_message);
         //Add edit text to dialog
         dialogBuilder.setView(userIDText);
 
         //This button will set userID
-        dialogBuilder.setPositiveButton("Set Username", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.username_set_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 userID = userIDText.getText().toString();
-                Toast.makeText(getContext(), "UserID set", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.username_is_set, Toast.LENGTH_SHORT).show();
 
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
@@ -738,7 +738,7 @@ public class BluetoothChatFragment extends Fragment {
             }
         });
         //This button will randomly generate a userID
-        dialogBuilder.setNegativeButton("Randomize", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.username_randomize_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Assign randomly generated userID
@@ -752,7 +752,7 @@ public class BluetoothChatFragment extends Fragment {
                     sb.append(AB.charAt(rnd.nextInt(AB.length())));
                 }
                 userID = sb.toString();
-                Toast.makeText(getContext(), "UserID randomized", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.username_is_randomized, Toast.LENGTH_SHORT).show();
 
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
@@ -825,18 +825,18 @@ public class BluetoothChatFragment extends Fragment {
 
         //Create TextView to be used in dialog
         final TextView textView = new TextView(getContext());
-        textView.setText(instructions);
+        textView.setText(R.string.instructions_content);
         textView.setPadding(25,25,25,25);
 
         //Set dialog title
-        dialogBuilder.setTitle("Instructions");
+        dialogBuilder.setTitle(R.string.instructions_title);
         //Set dialog message
         //dialogBuilder.setMessage(instructions);
         //Add edit text to dialog
         dialogBuilder.setView(textView);
 
         //Dismiss help
-        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 }
