@@ -47,7 +47,6 @@ package com.ded.smacktalker;
         import java.io.ObjectOutput;
         import java.io.ObjectOutputStream;
         import java.security.SecureRandom;
-        import java.util.List;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
@@ -68,8 +67,6 @@ public class BluetoothChatFragment extends Fragment {
 
     protected static String userID;
     private static final String USERIDKEY = "userID";
-    //This is a constant ID to track the device regardless of the set userID
-    private static String deviceID;
     private static final String DEVICEKEY = "deviceID";
 
     //This String will store the deviceID of the other person in the conversation
@@ -130,14 +127,14 @@ public class BluetoothChatFragment extends Fragment {
         setHasOptionsMenu(true);
 
         //Since the last three parameters are constants of the class, null is passed.
-        dbHandler = new myDBHandler(getContext(), null, null, 1);
+        dbHandler = new myDBHandler(getContext());
         prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         editor = prefs.edit();
         unread = new StringBuilder();
         rnd = new SecureRandom();
 
         //Get deviceID from preferences
-        deviceID = prefs.getString(DEVICEKEY, null);
+        String deviceID = prefs.getString(DEVICEKEY, null);
 
         if(deviceID == null){
             //One in 57 billion chance of two users having the same deviceID with this method

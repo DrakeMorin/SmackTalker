@@ -27,8 +27,8 @@ public class myDBHandler extends SQLiteOpenHelper{
     protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME, COLUMN_IMGID};
 
     private static final String TAG = "myDBHandler";
-    public myDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    public myDBHandler(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //For housekeeping, passes information to the super class which does background stuff.
     }
 

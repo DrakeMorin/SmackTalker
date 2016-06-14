@@ -18,7 +18,6 @@
     <string name="username_is_randomized">Username randomized</string>
 
     <!--  BluetoothChat -->
-    <string name="send">Send</string>
     <string name="not_connected">You are not connected to a device</string>
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving Bluetooth Chat.</string>
     <string name="title_connecting">Connecting&#8230;</string>
@@ -43,7 +42,6 @@
     <string name="insecure_connect">Connect a device - Insecure</string>
     <string name="discoverable">Make discoverable</string>
     <string name="action_resetUserName">Reset username</string>
-    <string name="action_bluetooth">Bluetooth</string>
     <string name="action_panic">Panic Button</string>
     <string name="action_help">Help</string>
 </resources>
