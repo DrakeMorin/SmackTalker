@@ -21,7 +21,7 @@ import java.util.UUID;
  * incoming connections, a thread for connecting with a device, and a
  * thread for performing data transmissions when connected.
  */
-class BluetoothChatService {
+public class BluetoothChatService {
     // Debugging
     private static final String TAG = "BluetoothChatService";
 
@@ -149,7 +149,7 @@ class BluetoothChatService {
      * @param socket The BluetoothSocket on which the connection was made
      * @param device The BluetoothDevice that has been connected
      */
-    private synchronized void connected(BluetoothSocket socket, BluetoothDevice
+    public synchronized void connected(BluetoothSocket socket, BluetoothDevice
             device, final String socketType) {
         Log.d(TAG, "connected, Socket Type:" + socketType);
 
