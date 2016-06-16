@@ -13,8 +13,10 @@
         android:background="#FFFFFF"
         android:paddingStart="5dp"
         android:paddingLeft="5dp"
+        android:paddingEnd="5dp"
+        android:paddingRight="5dp"
         android:text="@string/title_paired_devices"
-        android:textColor="#000000"
+        android:textColor="#2d2d2d"
         android:visibility="gone"
         />
 
@@ -33,6 +35,8 @@
         android:background="#FFFFFF"
         android:paddingLeft="5dp"
         android:paddingStart="5dp"
+        android:paddingRight="5dp"
+        android:paddingEnd="5dp"
         android:text="@string/title_other_devices"
         android:textColor="#000000"
         android:visibility="gone"
