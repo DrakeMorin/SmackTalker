@@ -18,7 +18,7 @@ public class myDBHandler extends SQLiteOpenHelper{
     public static final String TABLE_MESSAGES = "messagehistory";
 
     //Every column in the table should have its own constant here.
-    protected static final String COLUMN_ID = "_id";
+    protected static final String COLUMN_ID = "id";
     protected static final String COLUMN_MESSAGETEXT = "message";
     protected static final String COLUMN_SENDERID = "senderid";
     protected static final String COLUMN_TIME = "time";
