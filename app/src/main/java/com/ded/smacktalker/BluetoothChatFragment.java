@@ -606,7 +606,7 @@ public class BluetoothChatFragment extends Fragment {
 
         //Set the name that will reference corresponding database table.
         //Replace all removes all spaces from the string and replaces them with nothing.
-        currentTable = (deviceID + mConnectedDeviceName).replaceAll("\\s", "");
+        currentTable = (deviceID + mConnectedDeviceName).replaceAll("/[^A-Za-z0-9 ]/", "");
 
         //This method checks if a table already exists, otherwise it creates one.
         dbHandler.createTable(currentTable);
