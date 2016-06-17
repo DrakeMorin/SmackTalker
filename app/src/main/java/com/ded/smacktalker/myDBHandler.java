@@ -11,14 +11,14 @@ import android.util.Log;
 public class myDBHandler extends SQLiteOpenHelper{
 
     //If you update the structure of the database, change this constant for compatibility
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     //Name of database, must end in .db
     private static final String DATABASE_NAME = "SmackTalker.db";
     //Name of the table within the database
     public static final String TABLE_MESSAGES = "messagehistory";
 
     //Every column in the table should have its own constant here.
-    protected static final String COLUMN_ID = "id";
+    protected static final String COLUMN_ID = "_id";
     protected static final String COLUMN_MESSAGETEXT = "message";
     protected static final String COLUMN_SENDERID = "senderid";
     protected static final String COLUMN_TIME = "time";
