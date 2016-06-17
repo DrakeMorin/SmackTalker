@@ -1,50 +1,52 @@
 package com.ded.smacktalker;
 
-        import android.app.ActionBar;
-        import android.app.Activity;
-        import android.app.AlertDialog;
-        import android.app.Fragment;
-        import android.app.NotificationManager;
-        import android.app.PendingIntent;
-        import android.bluetooth.BluetoothAdapter;
-        import android.bluetooth.BluetoothDevice;
-        import android.content.ClipData;
-        import android.content.ClipboardManager;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.content.SharedPreferences;
-        import android.database.Cursor;
-        import android.database.sqlite.SQLiteCursor;
-        import android.os.Build;
-        import android.os.Bundle;
-        import android.os.Handler;
-        import android.os.Message;
-        import android.support.annotation.Nullable;
-        import android.util.Log;
-        import android.view.KeyEvent;
-        import android.view.LayoutInflater;
-        import android.view.Menu;
-        import android.view.MenuInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.view.inputmethod.EditorInfo;
-        import android.widget.AdapterView;
-        import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.ListView;
-        import android.widget.SimpleCursorAdapter;
-        import android.widget.TextView;
-        import android.widget.Toast;
-        import java.io.ByteArrayInputStream;
-        import java.io.ByteArrayOutputStream;
-        import java.io.IOException;
-        import java.io.ObjectInput;
-        import java.io.ObjectInputStream;
-        import java.io.ObjectOutput;
-        import java.io.ObjectOutputStream;
-        import java.security.SecureRandom;
+import android.app.ActionBar;
+import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.NotificationCompat;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.security.SecureRandom;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
@@ -69,7 +71,7 @@ public class BluetoothChatFragment extends Fragment {
     private static final String DEVICEKEY = "deviceID";
 
     //This String will store the deviceID of the other person in the conversation
-    private static String DeviceID;
+    private static String oDeviceID;
 
     myDBHandler dbHandler;
     //This will store the name of the table for the current conversation.
@@ -164,8 +166,8 @@ public class BluetoothChatFragment extends Fragment {
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-            Activity activity = getActivity();
-            Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            FragmentActivity activity = getActivity();
+            Toast.makeText(activity,R.string.bt_unavailable, Toast.LENGTH_LONG).show();
             activity.finish();
         }
 
@@ -251,7 +253,6 @@ public class BluetoothChatFragment extends Fragment {
 
         /*// Initialize the array adapter for the conversation thread
         mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
-
         myListView.setAdapter(mConversationArrayAdapter);*/
 
         myListView.setOnItemClickListener(
@@ -276,7 +277,7 @@ public class BluetoothChatFragment extends Fragment {
                         //Add text clip to clipboard
                         clipboard.setPrimaryClip(clip);
 
-                        Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.clipboard_copy, Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -308,7 +309,7 @@ public class BluetoothChatFragment extends Fragment {
 
                         sendMessage(send);
                     }else {
-                        Toast.makeText(getContext(), "No message to send", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.editText_empty, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -344,18 +345,18 @@ public class BluetoothChatFragment extends Fragment {
         try{
             condition = mChatService.getState() != BluetoothChatService.STATE_CONNECTED;
         }catch (NullPointerException e){
-            Toast.makeText(getContext(), "Error: please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.error_try_again, Toast.LENGTH_SHORT).show();
             setupChat();
         }
         if (condition) {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
-            mChatService.write(bytes);
+        mChatService.write(bytes);
 
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            newMessageText.setText(mOutStringBuffer);
+        // Reset out string buffer to zero and clear the edit text field
+        mOutStringBuffer.setLength(0);
+        newMessageText.setText(mOutStringBuffer);
 
     }
 
@@ -383,7 +384,7 @@ public class BluetoothChatFragment extends Fragment {
 
                     sendMessage(send);
                 }else {
-                    Toast.makeText(getContext(), "No message to send", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.editText_empty, Toast.LENGTH_SHORT).show();
                 }
             }
             return true;
@@ -714,16 +715,16 @@ public class BluetoothChatFragment extends Fragment {
         //Set dialog title
         //dialogBuilder.setTitle("Username");
         //Set dialog message
-        dialogBuilder.setMessage("Please enter your username");
+        dialogBuilder.setMessage(R.string.username_dialog_message);
         //Add edit text to dialog
         dialogBuilder.setView(userIDText);
 
         //This button will set userID
-        dialogBuilder.setPositiveButton("Set Username", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.username_set_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 userID = userIDText.getText().toString();
-                Toast.makeText(getContext(), "UserID set", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.username_is_set, Toast.LENGTH_SHORT).show();
 
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
@@ -731,7 +732,7 @@ public class BluetoothChatFragment extends Fragment {
             }
         });
         //This button will randomly generate a userID
-        dialogBuilder.setNegativeButton("Randomize", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.username_randomize_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Assign randomly generated userID
@@ -745,7 +746,7 @@ public class BluetoothChatFragment extends Fragment {
                     sb.append(AB.charAt(rnd.nextInt(AB.length())));
                 }
                 userID = sb.toString();
-                Toast.makeText(getContext(), "UserID randomized", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.username_is_randomized, Toast.LENGTH_SHORT).show();
 
                 //Stores the userID under the key specified in the final USERIDKEY
                 editor.putString(USERIDKEY, userID);
@@ -818,21 +819,21 @@ public class BluetoothChatFragment extends Fragment {
 
         //Create TextView to be used in dialog
         final TextView textView = new TextView(getContext());
-        textView.setText(instructions);
+        textView.setText(R.string.instructions_content);
         textView.setPadding(25,25,25,25);
 
         //Set dialog title
-        dialogBuilder.setTitle("Instructions");
+        dialogBuilder.setTitle(R.string.instructions_title);
         //Set dialog message
         //dialogBuilder.setMessage(instructions);
         //Add edit text to dialog
         dialogBuilder.setView(textView);
 
         //Dismiss help
-        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                }
+            }
         });
 
         //Create the dialog
@@ -841,7 +842,4 @@ public class BluetoothChatFragment extends Fragment {
         aDialog.show();
     }
 
-    private class FragmentActivity {
-    }
 }
-
