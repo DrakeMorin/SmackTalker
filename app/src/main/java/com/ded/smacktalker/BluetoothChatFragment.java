@@ -408,7 +408,7 @@ public class BluetoothChatFragment extends Fragment {
         }
         actionBar.setSubtitle(resId);
     }
-
+//
     /**
      * Updates the status on the action bar.
      *
