@@ -100,11 +100,6 @@ public class BluetoothChatFragment extends Fragment {
     private String mConnectedDeviceName = null;
 
     /**
-     * Array adapter for the conversation thread
-     */
-    //private ArrayAdapter<String> mConversationArrayAdapter;
-
-    /**
      * String buffer for outgoing messages
      */
     private StringBuffer mOutStringBuffer;
@@ -407,7 +402,7 @@ public class BluetoothChatFragment extends Fragment {
         }
         actionBar.setSubtitle(resId);
     }
-//
+
     /**
      * Updates the status on the action bar.
      *
@@ -511,7 +506,7 @@ public class BluetoothChatFragment extends Fragment {
     }
 
     /**
-     * Establish connection with other divice
+     * Establish connection with other device
      *
      * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
      * @param secure Socket Security type - Secure (true) , Insecure (false)
@@ -600,12 +595,12 @@ public class BluetoothChatFragment extends Fragment {
         return false;
     }
 
+    /**
+     * Sets up the database for a new conversation. It updates the currentTable variable
+     * and loads any past messages if that table exists
+     */
     protected void onConversationStart(){
-        //This method is to be called when a conversation is started with someone.
-        //This will load any past messages if a table exists.
-
-        //Set the name that will reference corresponding database table.
-        //Replace all removes all spaces from the string and replaces them with nothing.
+        //Replace all removes all spaces from the string before setting the table name
         currentTable = (deviceID + mConnectedDeviceName).replaceAll("\\P{Alnum}", "");
 
         //This method checks if a table already exists, otherwise it creates one.
@@ -615,6 +610,13 @@ public class BluetoothChatFragment extends Fragment {
         populateListView();
         Log.d(TAG, "New conversation initialized");
     }
+
+    /**
+     * Runs when a message is received through Bluetooth. Processes the received byte array
+     * and tracks if messages are unread.
+     *
+     * @param bytes The serialized MessageData object containing the received message
+     */
     protected void onMessageReceived(byte[] bytes){
         //This method is to be called when a bluetooth message is received
 
@@ -643,8 +645,10 @@ public class BluetoothChatFragment extends Fragment {
         Log.d(TAG, "Message received");
     }
 
+    /**
+     * Refreshes the messages shown in ListView, if panic mode is not active.
+     */
     private void populateListView() {
-        //Will only populate the myListView if panic mode is off.
         Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
         String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
@@ -658,7 +662,7 @@ public class BluetoothChatFragment extends Fragment {
         myCursorAdapter = new SimpleCursorAdapter(getContext(), R.layout.custom_row, myCursor, fromFieldNames, toViewIDs, 0);
 
         if(panicMode){
-            //Do not show messages; set adapter to null
+            //Do not show messages, set adapter to null
             myListView.setAdapter(null);
             Log.d(TAG, "Still in panic mode!");
         }else {
@@ -668,6 +672,10 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
+    /**
+     * Builds and then creates a notification for unread messages. When clicked, the notification
+     * returns you to the app.
+     */
     private void createNotification(){
         //This will store and build the notification and its data
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
@@ -700,12 +708,17 @@ public class BluetoothChatFragment extends Fragment {
         mNotifyMgr.notify(0, mBuilder.build());
     }
 
+    /**
+     * Deletes all notifications. This is called every time .onResume runs.
+     */
     private void deleteNotifications(){
-        //Clear all notifications. This will run when the .onResume() is called.
         NotificationManager mNotifyMgr = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotifyMgr.cancelAll();
     }
 
+    /**
+     * Creates a dialog box to set the userID for the phone.
+     */
     private void setUserID(){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 
@@ -760,6 +773,11 @@ public class BluetoothChatFragment extends Fragment {
         aDialog.show();
     }
 
+    /**
+     * Converts a MessageData object to a byte array before it is sent through bluetooth
+     * @param md The MessageData object to be serialized
+     * @return The serialized MessageData object
+     */
     private byte[] convertToBytes(MessageData md) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
@@ -787,6 +805,11 @@ public class BluetoothChatFragment extends Fragment {
         return mBytes;
     }
 
+    /**
+     * Deserializes a MessageData object that was received from Bluetooth.
+     * @param bytes The byte array to be converted back to a MessageData object
+     * @return The deserialized MessageData object
+     */
     private MessageData convertFromBytes(byte[] bytes) {
         MessageData md = null;
 
@@ -814,6 +837,9 @@ public class BluetoothChatFragment extends Fragment {
         return md;
     }
 
+    /**
+     * Creates a dialog to display instructions for app use.
+     */
     private void showHelp(){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 
