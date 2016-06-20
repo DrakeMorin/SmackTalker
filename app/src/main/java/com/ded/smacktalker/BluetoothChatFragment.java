@@ -70,12 +70,12 @@ public class BluetoothChatFragment extends Fragment {
     private static final String USERIDKEY = "userID";
     private static final String DEVICEKEY = "deviceID";
 
-    //This String will store the deviceID of the other person in the conversation
-    private static String oDeviceID;
-
     private myDBHandler dbHandler;
-    //This will store the name of the table for the current conversation.
-    private String currentTable = myDBHandler.TABLE_MESSAGES;
+
+    /**
+     * Stores what table in the database is to be accessed
+     */
+    protected String currentTable = myDBHandler.TABLE_MESSAGES;
 
     //Used for randomly generated userIDs
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
