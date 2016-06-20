@@ -29,12 +29,12 @@ public class myDBHandler extends SQLiteOpenHelper{
 
     //Every column in the table should have its own constant here.
     protected static final String COLUMN_ID = "_id";
-    protected static final String COLUMN_MESSAGETEXT = "message";
-    protected static final String COLUMN_SENDERID = "senderid";
+    protected static final String COLUMN_MESSAGE_TEXT = "message";
+    protected static final String COLUMN_SENDER_ID = "senderid";
     protected static final String COLUMN_TIME = "time";
-    protected static final String COLUMN_IMGID = "imgid";
+    protected static final String COLUMN_IMG_ID = "imgid";
 
-    protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME, COLUMN_IMGID};
+    protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGE_TEXT, COLUMN_SENDER_ID, COLUMN_TIME, COLUMN_IMG_ID};
 
     /**
      * The debug tag
@@ -64,10 +64,10 @@ public class myDBHandler extends SQLiteOpenHelper{
         //Where the <> is the details about that column
         String query = "CREATE TABLE " + TABLE_MESSAGES + "(" +
                 COLUMN_ID + " INTERGER PRIMARY KEY, " + //Unique int identifier, automatically incrementing
-                COLUMN_MESSAGETEXT + " TEXT, " +
-                COLUMN_SENDERID + " TEXT, " +
+                COLUMN_MESSAGE_TEXT + " TEXT, " +
+                COLUMN_SENDER_ID + " TEXT, " +
                 COLUMN_TIME + " INTEGER, " +
-                COLUMN_IMGID + " INTEGER " +
+                COLUMN_IMG_ID + " INTEGER " +
                 ");";
 
         //Passes the above command to SQL to execute
@@ -101,10 +101,10 @@ public class myDBHandler extends SQLiteOpenHelper{
 
         String query = "CREATE TABLE IF NOT EXISTS " + table + "(" +
                 COLUMN_ID + " INTERGER PRIMARY KEY, " + //Unique int identifier, automatically incrementing
-                COLUMN_MESSAGETEXT + " TEXT, " +
-                COLUMN_SENDERID + " TEXT, " +
+                COLUMN_MESSAGE_TEXT + " TEXT, " +
+                COLUMN_SENDER_ID + " TEXT, " +
                 COLUMN_TIME + " INTEGER, " +
-                COLUMN_IMGID + " INTEGER " +
+                COLUMN_IMG_ID + " INTEGER " +
                 ");";
 
         //Passes the above command to SQL to execute
@@ -122,10 +122,10 @@ public class myDBHandler extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
 
         //Adds the data to its respective columns
-        values.put(COLUMN_MESSAGETEXT, md.getMessage());
-        values.put(COLUMN_SENDERID, md.getSenderID());
+        values.put(COLUMN_MESSAGE_TEXT, md.getMessage());
+        values.put(COLUMN_SENDER_ID, md.getSenderID());
         values.put(COLUMN_TIME, md.getTime());
-        values.put(COLUMN_IMGID, md.getImgID());
+        values.put(COLUMN_IMG_ID, md.getImgID());
 
         //Creates a database we can write to!
         SQLiteDatabase db = getWritableDatabase();
@@ -149,7 +149,7 @@ public class myDBHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
 
         //Deletes from the table, where the MESSAGETEXT column matches the parameter passed in.
-        db.execSQL("DELETE FROM " + table + " WHERE " + COLUMN_MESSAGETEXT +
+        db.execSQL("DELETE FROM " + table + " WHERE " + COLUMN_MESSAGE_TEXT +
                 "=\"" + messageID + "\";");
 
         //Close database
@@ -178,8 +178,8 @@ public class myDBHandler extends SQLiteOpenHelper{
 
         while(!c.isAfterLast()){
             //While there is still results to go
-            if (c.getString(c.getColumnIndex(COLUMN_MESSAGETEXT)) != null){
-                dbString += c.getString(c.getColumnIndex(COLUMN_MESSAGETEXT));
+            if (c.getString(c.getColumnIndex(COLUMN_MESSAGE_TEXT)) != null){
+                dbString += c.getString(c.getColumnIndex(COLUMN_MESSAGE_TEXT));
 
                 //Adds a new line
                 dbString += "\n";

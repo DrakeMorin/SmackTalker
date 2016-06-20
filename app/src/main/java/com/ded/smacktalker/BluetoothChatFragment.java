@@ -165,11 +165,13 @@ public class BluetoothChatFragment extends Fragment {
             Toast.makeText(activity,R.string.bt_unavailable, Toast.LENGTH_LONG).show();
             activity.finish();
         }
-
         showHelp();
     }
 
 
+    /**
+     * Requests to turn on bluetooth and sets up chat service.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -184,6 +186,9 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
+    /**
+     * Stops BluetoothChatService
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -192,6 +197,9 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
+    /**
+     * Clears notifications and unread messages. Restarts BluetoothChatService if necessary.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -219,12 +227,16 @@ public class BluetoothChatFragment extends Fragment {
         populateListView();
     }
 
+    /**
+     * Tracks that app is now in the background for unread messages tracking.
+     */
     @Override
     public void onPause() {
         super.onPause();
         //Set bool saying app is running in background
         inBack = true;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -262,7 +274,7 @@ public class BluetoothChatFragment extends Fragment {
                         //Move cursor position to the corresponding item touched
                         c.moveToPosition(position);
                         //Get the Message from the MESSAGETEXT column in the database
-                        String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGETEXT));
+                        String message = c.getString(c.getColumnIndex(myDBHandler.COLUMN_MESSAGE_TEXT));
 
                         //Save message to clipboard
                         //Get handle for clipboard service
@@ -651,7 +663,7 @@ public class BluetoothChatFragment extends Fragment {
     private void populateListView() {
         Cursor myCursor = dbHandler.getAllRows(currentTable);
         //What data you are going to populate the data with
-        String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGETEXT, myDBHandler.COLUMN_SENDERID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMGID};
+        String[] fromFieldNames = new String[]{myDBHandler.COLUMN_MESSAGE_TEXT, myDBHandler.COLUMN_SENDER_ID, myDBHandler.COLUMN_TIME, myDBHandler.COLUMN_IMG_ID};
 
         //Where the data is going to go.
         int[] toViewIDs = new int[]{R.id.listRowMessage, R.id.listRowSender, R.id.listRowTime, R.id.listRowImage};
