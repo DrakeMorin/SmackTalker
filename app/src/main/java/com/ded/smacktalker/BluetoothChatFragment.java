@@ -65,21 +65,21 @@ public class BluetoothChatFragment extends Fragment {
     private EditText newMessageText;
     private Button mSendButton;
 
-    protected static String userID;
-    protected static String deviceID;
+    private static String userID;
+    private static String deviceID;
     private static final String USERIDKEY = "userID";
     private static final String DEVICEKEY = "deviceID";
 
     //This String will store the deviceID of the other person in the conversation
     private static String oDeviceID;
 
-    myDBHandler dbHandler;
+    private myDBHandler dbHandler;
     //This will store the name of the table for the current conversation.
-    String currentTable = myDBHandler.TABLE_MESSAGES;
+    private String currentTable = myDBHandler.TABLE_MESSAGES;
 
     //Used for randomly generated userIDs
-    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    static SecureRandom rnd;
+    private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static SecureRandom rnd;
 
     //Preferences which carry across run time sessions
     SharedPreferences prefs;
@@ -87,7 +87,7 @@ public class BluetoothChatFragment extends Fragment {
     //Will contain all messages currently unread
     StringBuilder unread;
     //Will store whether the app is in the fore or background
-    static boolean inBack = false;
+    private static boolean inBack = false;
     //Will store if device is in panic mode
     static boolean panicMode = false;
 

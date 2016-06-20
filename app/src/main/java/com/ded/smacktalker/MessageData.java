@@ -9,7 +9,7 @@ import java.util.Locale;
 /**
  * This class is the template for storing messages and their corresponding information
  */
-class MessageData implements Serializable{
+public class MessageData implements Serializable{
 
     /**
      * The message text

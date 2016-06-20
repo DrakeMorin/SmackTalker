@@ -9,15 +9,22 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Handles interactions between the app and the database
+ * Handles interactions between the app and the database. Configured so multiple instances of this
+ * class will all access one database.
  */
 public class myDBHandler extends SQLiteOpenHelper{
 
-    //If you update the structure of the database, change this constant for compatibility
+    /**
+     * The database version. If the database structure is altered, this constant must be incremented
+     */
     private static final int DATABASE_VERSION = 6;
-    //Name of database, must end in .db
+    /**
+     * The name of the database, must end in .db
+     */
     private static final String DATABASE_NAME = "SmackTalker.db";
-    //Name of the table within the database
+    /**
+     * The first table name in the database. No conversations are stored in this table.
+     */
     public static final String TABLE_MESSAGES = "messagehistory";
 
     //Every column in the table should have its own constant here.
@@ -29,10 +36,13 @@ public class myDBHandler extends SQLiteOpenHelper{
 
     protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME, COLUMN_IMGID};
 
+    /**
+     * The debug tag
+     */
     private static final String TAG = "myDBHandler";
 
     /**
-     * Constructor that creates the database
+     * Constructor. Prepares a new database
      * @param context Context of the activity
      */
     public myDBHandler(Context context) {
