@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/**
+ * Handles interactions between the app and the database
+ */
 public class myDBHandler extends SQLiteOpenHelper{
 
     //If you update the structure of the database, change this constant for compatibility
@@ -27,11 +30,20 @@ public class myDBHandler extends SQLiteOpenHelper{
     protected static final String[] allColumns = {COLUMN_ID, COLUMN_MESSAGETEXT, COLUMN_SENDERID, COLUMN_TIME, COLUMN_IMGID};
 
     private static final String TAG = "myDBHandler";
+
+    /**
+     * Constructor that creates the database
+     * @param context Context of the activity
+     */
     public myDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //For housekeeping, passes information to the super class which does background stuff.
     }
 
+    /**
+     * Creates first table when Database is created
+     * @param db The database to create a table in
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         //What happens when the database is created for the first time.
@@ -62,6 +74,11 @@ public class myDBHandler extends SQLiteOpenHelper{
         Log.d(TAG, "Table Dropped");
     }
 
+    /**
+     * Creates a table to store a conversation if one does not already exist
+     *
+     * @param table The table to be created
+     */
     public void createTable(String table){
         //Creates a database we can write to!
         SQLiteDatabase db = getWritableDatabase();
@@ -84,16 +101,21 @@ public class myDBHandler extends SQLiteOpenHelper{
         db.execSQL(query);
     }
 
-    //Add a new row to the database
-    public void addMessage(String table, MessageData message){
+    /**
+     * Adds a new row of information to a specified table
+     *
+     * @param table The table to access
+     * @param md The MessageData object containing the message and info
+     */
+    public void addMessage(String table, MessageData md){
         //Allows you to set values for several columns for one row, in one go.
         ContentValues values = new ContentValues();
 
         //Adds the data to its respective columns
-        values.put(COLUMN_MESSAGETEXT, message.getMessage());
-        values.put(COLUMN_SENDERID, message.getSenderID());
-        values.put(COLUMN_TIME, message.getTime());
-        values.put(COLUMN_IMGID, message.getImgID());
+        values.put(COLUMN_MESSAGETEXT, md.getMessage());
+        values.put(COLUMN_SENDERID, md.getSenderID());
+        values.put(COLUMN_TIME, md.getTime());
+        values.put(COLUMN_IMGID, md.getImgID());
 
         //Creates a database we can write to!
         SQLiteDatabase db = getWritableDatabase();
@@ -106,7 +128,12 @@ public class myDBHandler extends SQLiteOpenHelper{
         db.close();
     }
 
-    //Delete a row from the database
+    /**
+     * Deletes a row from a specified table
+     *
+     * @param table The table to access data from
+     * @param messageID The message to be deleted
+     */
     public void deleteMessage(String table, String messageID){
         //Creates a database we can delete from!
         SQLiteDatabase db = getWritableDatabase();
@@ -119,7 +146,12 @@ public class myDBHandler extends SQLiteOpenHelper{
         db.close();
     }
 
-    //Print out the database as a string
+    /**
+     * Returns all the messages in a specified table
+     *
+     * @param table The table to access data from
+     * @return String of all the messages in the table
+     */
     public String databaseToString(String table){
         String dbString = "";
 
@@ -148,7 +180,12 @@ public class myDBHandler extends SQLiteOpenHelper{
         return dbString;
     }
 
-    //This function when called returns all the data in the database in a cursor.
+    /**
+     * Returns all the data in a specified table
+     *
+     * @param table The table to access data from
+     * @return Contains all data from the table in a cursor
+     */
     public Cursor getAllRows(String table){
         SQLiteDatabase db = getWritableDatabase();
         Cursor c = db.query(true, table, allColumns , null, null, null, null, null, null );
@@ -158,6 +195,12 @@ public class myDBHandler extends SQLiteOpenHelper{
         return c;
     }
 
+    /**
+     * Determines the number of rows in a table
+     *
+     * @param table The table to access data from
+     * @return Number of rows in table
+     */
     //Get Row Count
     public int getCount(String table) {
         String countQuery = "SELECT  * FROM " + table;

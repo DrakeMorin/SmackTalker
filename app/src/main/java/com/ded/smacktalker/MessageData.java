@@ -6,21 +6,34 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * This class is the template for storing messages and their corresponding information
+ */
 class MessageData implements Serializable{
-    //Objects of this class will be used to hold the text messages sent and received
 
-    //Holds the sent message
+    /**
+     * The message text
+     */
     String message;
 
-    //Holds the time message was sent
+    /**
+     * The time stamp for a message
+     */
     String time;
 
-    //Holds name of sender
+    /**
+     * The userID for the sender of a message
+     */
     String senderID;
 
-    //Holds the ID of the img to be shown based on the first char in senderID
+    /**
+     * The array index value for myImageArray to determine what image is to be shown
+     */
     int imgID;
 
+    /**
+     * Contains the int value to all sender icons (A to Z & asterisks)
+     */
     int[] myImageArray = new int[]{
             R.mipmap.a_img,
             R.mipmap.b_img,
@@ -51,6 +64,11 @@ class MessageData implements Serializable{
             R.mipmap.special_img,
     };
 
+    /**
+     * Constructor for MessageData. Sets message, time, senderID, and imgID
+     * @param message The message to be stored
+     * @param senderID The senderID to be stored
+     */
     public MessageData(String message, String senderID) {
         //Constructor that sets data
         this.message = message;
@@ -59,11 +77,19 @@ class MessageData implements Serializable{
         this.imgID = parseSenderID();
     }
 
+    /**
+     * @return The message stored
+     */
     @Override
     public String toString() {
         return message;
     }
 
+    /**
+     * Determines what index value represents the first char of senderID.
+     * If the first char is not a letter, an asterisk is assigned.
+     * @return The array index value
+     */
     private int parseSenderID(){
         //This method determines what the first char of senderID is, and assigns an int
         //to it based on what letter it is (0 - 26). A is 0, Z is 25.
@@ -91,6 +117,10 @@ class MessageData implements Serializable{
         return myImageArray[charID];
     }
 
+    /**
+     * Determines the time and formats it to the desired string
+     * @return The timestamp for the message
+     */
     private String setTimeStamp(){
         //Initialize a calendar to current date
         Calendar c = Calendar.getInstance();

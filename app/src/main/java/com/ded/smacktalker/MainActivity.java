@@ -5,9 +5,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+/**
+ * The main activity of the app which handles the chat fragment
+ */
 public class MainActivity extends AppCompatActivity {
-
-
         public static final String TAG = "MainActivity";
 
         @Override
