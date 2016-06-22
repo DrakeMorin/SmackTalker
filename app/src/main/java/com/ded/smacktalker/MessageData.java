@@ -90,7 +90,7 @@ public class MessageData implements Serializable{
      * If the first char is not a letter, an asterisk is assigned.
      * @return The array index value
      */
-    private int parseSenderID(){
+    protected int parseSenderID(){
         //This method determines what the first char of senderID is, and assigns an int
         //to it based on what letter it is (0 - 26). A is 0, Z is 25.
         //Special letters are all assigned 26
@@ -121,7 +121,7 @@ public class MessageData implements Serializable{
      * Determines the time and formats it to the desired string
      * @return The timestamp for the message
      */
-    private String setTimeStamp(){
+    protected String setTimeStamp(){
         //Initialize a calendar to current date
         Calendar c = Calendar.getInstance();
         //Create format for the date
