@@ -7,10 +7,6 @@ We have chosen to use Bluetooth to make our application unique and independent o
 
 Bluetooth is one of the least used modes of communication between devices.  We wish to expand in this small market as this is our group's first application.
 
-Having learned Git and GitHub, we plan to use GitHub to help our collaboration, and track our project over its development. Keeping with that, we will endeavour to make commits based on each logical change.
-
-Note that many commits from April 11 - 13 were attempted fixes at resolving missing code. This issue was eventually resolved.
-
 FEATURES:
 -Send and receive messages each containing message, senderID, and time stamp
 
@@ -35,3 +31,7 @@ FEATURES:
 -Panic mode which will hide all messages from screen
 
 -Our very own unique logo and colour scheme
+
+NOTES: The Bluetooth Handler is from the open-source Google Samples on Bluetooth Chat: https://github.com/googlesamples/android-BluetoothChat
+
+Many commits from April 11 - 13 were attempted fixes at resolving missing code. This issue was eventually resolved.
