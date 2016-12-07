@@ -20,7 +20,11 @@ import java.util.UUID;
  * connections with other devices. It has a thread that listens for
  * incoming connections, a thread for connecting with a device, and a
  * thread for performing data transmissions when connected.
+ *
+ * This code is taken from the open-source Google Sample code and
+ * minor modifications were made. See README.md
  */
+
 public class BluetoothChatService {
     // Debugging
     private static final String TAG = "BluetoothChatService";
