@@ -50,6 +50,9 @@ import java.security.SecureRandom;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
+ *
+ * The base code is taken from the open-source Google Samples code and
+ * heavily changed to hook into our app. See README.md
  */
 public class BluetoothChatFragment extends Fragment {
 
